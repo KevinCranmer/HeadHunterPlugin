@@ -11,7 +11,7 @@ This plugin has given us new end game goals to try to collect as many heads as p
 It's just a for-fun addition to vanilla Minecraft inspired by Pokemon shining hunting and RuneScape pet hunting.
 
 ## Features
-Every mob now has a slim chance of dropping their head. When a player received a head, a message will broadcast to the server.
+Every mob now has a slim chance of dropping their head. When a player receives a head, a message will broadcast to the server.
 This drop is saved in a yml file along with the total kills per mob per player.
 
 ![image](images/HeadDrop.png)
@@ -29,3 +29,7 @@ This drop is saved in a yml file along with the total kills per mob per player.
 
 ### /mobs
 ![image](images/Mobs.png)
+
+
+## Contact Me
+Discord: https://discord.gg/UTjtJPTjGG

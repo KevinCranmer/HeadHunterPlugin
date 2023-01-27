@@ -16,6 +16,10 @@ This drop is saved in a yml file along with the total kills per mob per player.
 
 ![image](images/HeadDrop.png)
 
+The number of unique heads a player has received is displayed as a scoreboard in the TAB player list:
+
+![image](images/TabScoreboard.png)
+
 ## Commands
 
 #### /kc (/killcount)

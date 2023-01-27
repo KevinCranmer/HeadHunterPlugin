@@ -1,0 +1,21 @@
+name: HeadHunterPlugin
+version: ${project.version}
+main: me.crazycranberry.headhunterplugin.HeadHunterPlugin
+api-version: 1.19
+authors: [CrazyCranberry]
+description: My First plugin ever
+commands:
+  kc:
+    description: Returns the kill count for the requested mob.
+    aliases: killcount
+    usage: "Usage: /kc <MOB_NAME>"
+  hc:
+    description: Returns the heads you've received for the requested mob.
+    aliases: headcount
+    usage: "Usage: /hc <MOB_NAME>"
+  mobs:
+    description: List out all mobs eligible for the /hc and /kc commands.
+    usage: "Usage: /mobs"
+  heads:
+    description: List all unique heads you've received.
+    usage: "Usage: /heads"

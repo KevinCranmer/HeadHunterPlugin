@@ -4,8 +4,7 @@ import me.crazycranberry.headhunterplugin.util.MobHeads;
 import me.crazycranberry.headhunterplugin.util.ScoreboardWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -32,6 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,16 +39,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Objects;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
-import org.jetbrains.annotations.NotNull;
 
 public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     public final static Logger logger = Logger.getLogger("Minecraft");
-    List<String> validMobs;
     private static Field fieldProfileItem;
     YamlConfiguration chanceConfig;
     YamlConfiguration defaultChanceConfig;
@@ -59,38 +55,72 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        loadChanceConfigs();
-        loadLogConfig();
-        loadKcConfig();
+        registerCommandManager();
         registerEvents();
         scoreboardWrapper = new ScoreboardWrapper("Head Count");
+    }
+
+    private void registerCommandManager() {
+        CommandManager commandManager = new CommandManager(getServer(), chanceConfig(), kcConfig(), hcConfig());
+        setCommandManager("kc", commandManager);
+        setCommandManager("hc", commandManager);
+        setCommandManager("mobs", commandManager);
+        setCommandManager("heads", commandManager);
+    }
+
+    private void setCommandManager(String command, @NotNull CommandManager commandManager) {
+        PluginCommand pc = getCommand(command);
+        if (pc == null) {
+            logger.info(String.format("[ ERROR ] - Error loading the %s command", command));
+        } else {
+            pc.setExecutor(commandManager);
+        }
     }
 
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(this, this);
     }
 
-    private void loadChanceConfigs() {
+    private YamlConfiguration chanceConfig() {
+        if (chanceConfig != null) {
+            return chanceConfig;
+        }
         File chanceFile = new File(getDataFolder() + "" + File.separatorChar + "chance_config.yml");
         if(!chanceFile.exists()){
             saveResource("chance_config.yml", true);
             logger.info("chance_config.yml not found! copied chance_config.yml to " + getDataFolder());
         }
         chanceConfig = new YamlConfiguration();
+        try {
+            chanceConfig.load(chanceFile);
+        } catch (InvalidConfigurationException | IOException e) {
+            logger.info("[ ERROR ] An error occured while trying to load the chance file.");
+            e.printStackTrace();
+        }
+        return chanceConfig;
+    }
+
+    private YamlConfiguration defaultChanceConfig() {
+        if (defaultChanceConfig != null) {
+            return defaultChanceConfig;
+        }
         defaultChanceConfig = new YamlConfiguration();
         try {
             InputStream defaultChanceConfigStream = getResource("chance_config.yml");
             assert defaultChanceConfigStream != null;
             InputStreamReader defaultChanceConfigReader = new InputStreamReader(defaultChanceConfigStream);
-            chanceConfig.load(chanceFile);
             defaultChanceConfig.load(defaultChanceConfigReader);
         } catch (InvalidConfigurationException | IOException e) {
-            logger.info("[ ERROR ] An error occured while trying to load the chance file.");
+            logger.info("[ ERROR ] An error occured while trying to load the (default) chance file.");
             e.printStackTrace();
         }
+        return defaultChanceConfig;
     }
 
-    private void loadLogConfig() {
+    private YamlConfiguration hcConfig() {
+        if (headLogConfig != null) {
+            return headLogConfig;
+        }
         File logFile = new File(getDataFolder() + "" + File.separatorChar + "head_log.yml");
         if(!logFile.exists()){
             saveResource("head_log.yml", true);
@@ -103,9 +133,13 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             logger.info("[ ERROR ] An error occured while trying to load the log file.");
             e.printStackTrace();
         }
+        return headLogConfig;
     }
 
-    private void loadKcConfig() {
+    private YamlConfiguration kcConfig() {
+        if (kcLogConfig != null) {
+            return kcLogConfig;
+        }
         File logFile = new File(getDataFolder() + "" + File.separatorChar + "kc_log.yml");
         if(!logFile.exists()){
             saveResource("kc_log.yml", true);
@@ -118,99 +152,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             logger.info("[ ERROR ] An error occured while trying to load the log file.");
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (command.getName().equalsIgnoreCase("kc") || command.getName().equalsIgnoreCase("hc")) {
-            if (sender instanceof Player) {
-                Player p = (Player) sender;
-                if (args.length < 1) {
-                    p.sendMessage("You must provide a mob name (example: FROG_COLD)");
-                    return false;
-                }
-                String mob = args[0].toUpperCase();
-                boolean isKcCommand = command.getName().equalsIgnoreCase("kc");
-                YamlConfiguration config = isKcCommand ? kcLogConfig : headLogConfig;
-                if (!config.contains(p.getDisplayName()) || !Objects.requireNonNull(config.getConfigurationSection(p.getDisplayName())).contains(mob)) {
-                    if (getValidMobsList().contains(mob)) {
-                        if (isKcCommand) {
-                            printKcMessage(p, 0, mob);
-                        } else {
-                            printHcMessage(p, 0, mob);
-                        }
-                    } else {
-                        p.sendMessage("That mob does not exist. Try '/mobs' to view a list of all mobs.");
-                    }
-                    return true;
-                }
-                int count = Objects.requireNonNull(config.getConfigurationSection(p.getDisplayName())).getInt(mob);
-                if (isKcCommand) {
-                    printKcMessage(p, count, mob);
-                } else {
-                    printHcMessage(p, count, mob);
-                }
-                return true;
-            }
-        } else if (command.getName().equalsIgnoreCase("mobs")) {
-            if (sender instanceof Player) {
-                Player p = (Player) sender;
-                p.sendMessage(getValidMobsList().toString());
-            }
-        } else if (command.getName().equalsIgnoreCase("heads")) {
-            if (sender instanceof Player) {
-                Player p = (Player) sender;
-                printHeadsMessage(p);
-            }
-        }
-        return true;
-    }
-
-    private void printKcMessage(Player p, int kc, String mob) {
-        getServer().broadcastMessage(String.format("%s%s%s has killed %s %s%s%s's%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, kc, ChatColor.AQUA, mob, ChatColor.GRAY, ChatColor.RESET));
-    }
-
-    private void printHcMessage(Player p, int hc, String mob) {
-        getServer().broadcastMessage(String.format("%s%s%s has received %s %s%s%s heads%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, hc, ChatColor.AQUA, mob, ChatColor.GRAY, ChatColor.RESET));
-    }
-
-    private void printHeadsMessage(Player p) {
-        ConfigurationSection cs = headLogConfig.getConfigurationSection(p.getDisplayName());
-        if (cs == null) {
-            getServer().broadcastMessage(String.format("%s%s%s ain't get no head%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, ChatColor.RESET));
-            return;
-        }
-        getServer().broadcastMessage(String.format("%s%s%s has received the following heads: %s%s%s ", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, ChatColor.AQUA, cs.getKeys(false), ChatColor.RESET));
-    }
-
-    /** Get a valid list of mobs based on the chance_config.yml. */
-    private List<String> getValidMobsList() {
-        if (validMobs != null) {
-            return validMobs;
-        }
-        List<String> l = new ArrayList<>();
-        ConfigurationSection cs = chanceConfig.getConfigurationSection("chance_percent");
-        if (cs == null) {
-            return l;
-        }
-        Set<String> keys = cs.getKeys(false);
-        for (String key : keys) {
-            if (cs.isDouble(key)) {
-                l.add(key.toUpperCase());
-            } else if (cs.isConfigurationSection(key)) {
-                ConfigurationSection innerCs = cs.getConfigurationSection(key);
-                if (innerCs == null) {
-                    continue;
-                }
-                for (String innerKey : innerCs.getKeys(false)) {
-                    if (innerCs.isDouble(innerKey)) {
-                        l.add(String.format("%s_%s", key.toUpperCase(), innerKey.toUpperCase()));
-                    }
-                }
-            }
-        }
-        validMobs = l;
-        return validMobs;
+        return kcLogConfig;
     }
 
     @EventHandler
@@ -219,15 +161,15 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (entity.getKiller() != null) {
             String name = getTrueVictimName(event);
             double roll = Math.random();
-            double dropRate = chanceConfig.getDouble("chance_percent." + name.toLowerCase(), defaultChanceConfig.getDouble(name));
-            System.out.println("Rolled " + roll + " for a " + dropRate + " drop rate.");
+            double dropRate = chanceConfig().getDouble("chance_percent." + name.toLowerCase(), defaultChanceConfig().getDouble(name));
+            logger.info(String.format("Rolled %s for a %s drop rate.", roll, dropRate));
             if (roll < dropRate) {
                 entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name.replace(".", "_"), entity.getKiller()));
                 getServer().broadcastMessage(String.format("%s%s%s just got a %s%s%s head%s", ChatColor.LIGHT_PURPLE, entity.getKiller().getDisplayName(), ChatColor.GRAY, ChatColor.LIGHT_PURPLE, name.replaceAll("\\.", "_"),  ChatColor.GRAY, ChatColor.RESET));
-                logKillOrDrop(entity.getKiller(), name.replace(".", "_"), headLogConfig);
-                scoreboardWrapper.updateScore(entity.getKiller(), headLogConfig);
+                logKillOrDrop(entity.getKiller(), name.replace(".", "_"), hcConfig());
+                scoreboardWrapper.updateScore(entity.getKiller(), hcConfig());
             }
-            logKillOrDrop(entity.getKiller(), name.replace(".", "_"), kcLogConfig);
+            logKillOrDrop(entity.getKiller(), name.replace(".", "_"), kcConfig());
         }
     }
 
@@ -237,7 +179,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         } else if (config.contains(killer.getDisplayName())) {
             ConfigurationSection cs = config.getConfigurationSection(killer.getDisplayName());
             if (cs == null) {
-                System.out.printf("For some weird reason, %s has a null ConfigurationSection?", killer.getDisplayName());
+                logger.info(String.format("For some weird reason, %s has a null ConfigurationSection?", killer.getDisplayName()));
                 return;
             }
             cs.set(victim, 1);
@@ -318,14 +260,14 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.getPlayer().setScoreboard(scoreboardWrapper.getScoreboard());
-        scoreboardWrapper.updateScore(event.getPlayer(), headLogConfig);
+        scoreboardWrapper.updateScore(event.getPlayer(), hcConfig());
     }
 
     @Override
     public void onDisable() {
         try {
-            kcLogConfig.save(getDataFolder() + "" + File.separatorChar + "kc_log.yml");
-            headLogConfig.save(getDataFolder() + "" + File.separatorChar + "head_log.yml");
+            kcConfig().save(getDataFolder() + "" + File.separatorChar + "kc_log.yml");
+            hcConfig().save(getDataFolder() + "" + File.separatorChar + "head_log.yml");
         } catch (IOException e) {
             e.printStackTrace();
         }

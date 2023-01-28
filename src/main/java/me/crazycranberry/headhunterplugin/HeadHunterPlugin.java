@@ -1,5 +1,6 @@
 package me.crazycranberry.headhunterplugin;
 
+import me.crazycranberry.headhunterplugin.util.HeadHunterConfig;
 import me.crazycranberry.headhunterplugin.util.MobHeads;
 import me.crazycranberry.headhunterplugin.util.ScoreboardWrapper;
 import org.bukkit.ChatColor;
@@ -8,6 +9,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Frog;
 import org.bukkit.entity.Sheep;
@@ -46,6 +48,7 @@ import java.util.logging.Logger;
 public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     public final static Logger logger = Logger.getLogger("Minecraft");
     private static Field fieldProfileItem;
+    HeadHunterConfig headHunterConfig;
     YamlConfiguration chanceConfig;
     YamlConfiguration defaultChanceConfig;
     YamlConfiguration headLogConfig;
@@ -57,7 +60,63 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         // Plugin startup logic
         registerCommandManager();
         registerEvents();
-        scoreboardWrapper = new ScoreboardWrapper("Head Count");
+        registerScoreboard();
+    }
+
+    @Override
+    public void onDisable() {
+        try {
+            kcConfig().save(getDataFolder() + "" + File.separatorChar + "kc_log.yml");
+            hcConfig().save(getDataFolder() + "" + File.separatorChar + "head_log.yml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        displayScoreboard(event);
+    }
+
+    @EventHandler
+    public void onEntityDeathEvent(EntityDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity.getKiller() != null) {
+            String name = getTrueVictimName(event);
+            double roll = Math.random();
+            double dropRate = getDropRate(name, entity.getKiller());
+            logger.info(String.format("Rolled %s for a %s drop rate.", roll, dropRate));
+            if (roll < dropRate) {
+                entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name.replace(".", "_"), entity.getKiller()));
+                getServer().broadcastMessage(String.format("%s%s%s just got a %s%s%s head%s", ChatColor.LIGHT_PURPLE, entity.getKiller().getDisplayName(), ChatColor.GRAY, ChatColor.LIGHT_PURPLE, name.replaceAll("\\.", "_"),  ChatColor.GRAY, ChatColor.RESET));
+                logKillOrDrop(entity.getKiller(), name.replace(".", "_"), hcConfig());
+                updateScore(entity.getKiller(), hcConfig());
+            }
+            logKillOrDrop(entity.getKiller(), name.replace(".", "_"), kcConfig());
+        }
+    }
+
+    private void registerEvents() {
+        getServer().getPluginManager().registerEvents(this, this);
+    }
+
+    private void registerScoreboard() {
+        if (headHunterConfig().display_score()) {
+            scoreboardWrapper = new ScoreboardWrapper("Unique Head Count");
+        }
+    }
+
+    private void displayScoreboard(PlayerJoinEvent event) {
+        if (headHunterConfig().display_score()) {
+            event.getPlayer().setScoreboard(scoreboardWrapper.getScoreboard());
+            scoreboardWrapper.updateScore(event.getPlayer(), hcConfig());
+        }
+    }
+
+    private void updateScore(Player p, YamlConfiguration hcConfig) {
+        if (headHunterConfig().display_score()) {
+            scoreboardWrapper.updateScore(p, hcConfig);
+        }
     }
 
     private void registerCommandManager() {
@@ -77,26 +136,27 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    private void registerEvents() {
-        getServer().getPluginManager().registerEvents(this, this);
+    private YamlConfiguration loadConfig(String configName) {
+        File configFile = new File(getDataFolder() + "" + File.separatorChar + configName);
+        if(!configFile.exists()){
+            saveResource(configName, true);
+            logger.info(String.format("%s not found! copied %s to %s", configName, configName, getDataFolder()));
+        }
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(configFile);
+        } catch (InvalidConfigurationException | IOException e) {
+            logger.info("[ ERROR ] An error occured while trying to load " + configName);
+            e.printStackTrace();
+        }
+        return config;
     }
 
     private YamlConfiguration chanceConfig() {
         if (chanceConfig != null) {
             return chanceConfig;
         }
-        File chanceFile = new File(getDataFolder() + "" + File.separatorChar + "chance_config.yml");
-        if(!chanceFile.exists()){
-            saveResource("chance_config.yml", true);
-            logger.info("chance_config.yml not found! copied chance_config.yml to " + getDataFolder());
-        }
-        chanceConfig = new YamlConfiguration();
-        try {
-            chanceConfig.load(chanceFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            logger.info("[ ERROR ] An error occured while trying to load the chance file.");
-            e.printStackTrace();
-        }
+        chanceConfig = loadConfig("chance_config.yml");
         return chanceConfig;
     }
 
@@ -121,18 +181,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (headLogConfig != null) {
             return headLogConfig;
         }
-        File logFile = new File(getDataFolder() + "" + File.separatorChar + "head_log.yml");
-        if(!logFile.exists()){
-            saveResource("head_log.yml", true);
-            logger.info("head_log.yml not found! copied head_log.yml to " + getDataFolder() + "");
-        }
-        headLogConfig = new YamlConfiguration();
-        try {
-            headLogConfig.load(logFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            logger.info("[ ERROR ] An error occured while trying to load the log file.");
-            e.printStackTrace();
-        }
+        headLogConfig = loadConfig("head_log.yml");
         return headLogConfig;
     }
 
@@ -140,37 +189,26 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (kcLogConfig != null) {
             return kcLogConfig;
         }
-        File logFile = new File(getDataFolder() + "" + File.separatorChar + "kc_log.yml");
-        if(!logFile.exists()){
-            saveResource("kc_log.yml", true);
-            logger.info("kc_log.yml not found! copied kc_log.yml to " + getDataFolder() + "");
-        }
-        kcLogConfig = new YamlConfiguration();
-        try {
-            kcLogConfig.load(logFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            logger.info("[ ERROR ] An error occured while trying to load the log file.");
-            e.printStackTrace();
-        }
+        kcLogConfig = loadConfig("kc_log.yml");
         return kcLogConfig;
     }
 
-    @EventHandler
-    public void onEntityDeathEvent(EntityDeathEvent event) {
-        LivingEntity entity = event.getEntity();
-        if (entity.getKiller() != null) {
-            String name = getTrueVictimName(event);
-            double roll = Math.random();
-            double dropRate = chanceConfig().getDouble("chance_percent." + name.toLowerCase(), defaultChanceConfig().getDouble(name));
-            logger.info(String.format("Rolled %s for a %s drop rate.", roll, dropRate));
-            if (roll < dropRate) {
-                entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name.replace(".", "_"), entity.getKiller()));
-                getServer().broadcastMessage(String.format("%s%s%s just got a %s%s%s head%s", ChatColor.LIGHT_PURPLE, entity.getKiller().getDisplayName(), ChatColor.GRAY, ChatColor.LIGHT_PURPLE, name.replaceAll("\\.", "_"),  ChatColor.GRAY, ChatColor.RESET));
-                logKillOrDrop(entity.getKiller(), name.replace(".", "_"), hcConfig());
-                scoreboardWrapper.updateScore(entity.getKiller(), hcConfig());
-            }
-            logKillOrDrop(entity.getKiller(), name.replace(".", "_"), kcConfig());
+    private HeadHunterConfig headHunterConfig() {
+        if (headHunterConfig != null) {
+            return headHunterConfig;
         }
+        YamlConfiguration headHunterYamlConfig = loadConfig("head_hunter_config.yml");
+        headHunterConfig = new HeadHunterConfig(headHunterYamlConfig);
+        return headHunterConfig;
+    }
+
+    private double getDropRate(String mobName, Player killer) {
+        double dropRate = chanceConfig().getDouble("chance_percent." + mobName.toLowerCase(), defaultChanceConfig().getDouble(mobName));
+        if (headHunterConfig().looting_matters()) {
+            int looting_level = killer.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+            dropRate = dropRate * (1 + (looting_level * headHunterConfig().looting_multiplier()));
+        }
+        return dropRate;
     }
 
     private void logKillOrDrop(Player killer, String victim, YamlConfiguration config) {
@@ -253,22 +291,6 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             fieldProfileItem.set(meta, profile);
         }
         catch(NoSuchFieldException | IllegalArgumentException | SecurityException | IllegalAccessException e){
-            e.printStackTrace();
-        }
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        event.getPlayer().setScoreboard(scoreboardWrapper.getScoreboard());
-        scoreboardWrapper.updateScore(event.getPlayer(), hcConfig());
-    }
-
-    @Override
-    public void onDisable() {
-        try {
-            kcConfig().save(getDataFolder() + "" + File.separatorChar + "kc_log.yml");
-            hcConfig().save(getDataFolder() + "" + File.separatorChar + "head_log.yml");
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }

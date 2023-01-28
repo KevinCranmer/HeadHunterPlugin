@@ -29,11 +29,15 @@ public class ScoreboardWrapper {
     private final List<String> modifies = new ArrayList<>(MAX_LINES);
 
     /**
-     * Instantiates a new ScoreboardWrapper with a default title.
+     * Grab the main Scoreboard with a default title.
      */
     public ScoreboardWrapper(String title) {
-        scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
-        objective = scoreboard.registerNewObjective(title, Criteria.DUMMY, title);
+        scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard();
+        Objective objectiveTmp = scoreboard.getObjective(title);
+        if (objectiveTmp == null) {
+            objectiveTmp = scoreboard.registerNewObjective(title, Criteria.DUMMY, title);
+        }
+        objective = objectiveTmp;
         objective.setDisplayName(title);
         objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
     }

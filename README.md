@@ -20,6 +20,14 @@ The number of unique heads a player has received is displayed as a scoreboard in
 
 ![image](images/TabScoreboard.png)
 
+
+## Drop Rates
+
+To adjust drop rates simply edit the chance_config.yml file:
+
+![image](images/AdjustDropRates.png)
+
+
 ## Commands
 
 #### /kc (/killcount)

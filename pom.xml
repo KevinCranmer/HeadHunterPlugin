@@ -70,6 +70,10 @@
             <id>jetbrains-annotations</id>
             <url>https://mvnrepository.com/artifact/org.jetbrains/annotations</url>
         </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -89,6 +93,11 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>24.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.papermc</groupId>
+            <artifactId>paperlib</artifactId>
+            <version>1.0.5</version>
         </dependency>
     </dependencies>
 </project>

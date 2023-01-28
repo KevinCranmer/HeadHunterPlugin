@@ -1,10 +1,16 @@
 package me.crazycranberry.headhunterplugin;
 
+import io.papermc.lib.PaperLib;
 import me.crazycranberry.headhunterplugin.util.HeadHunterConfig;
+import me.crazycranberry.headhunterplugin.util.JsonDataType;
 import me.crazycranberry.headhunterplugin.util.MobHeads;
 import me.crazycranberry.headhunterplugin.util.ScoreboardWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.TileState;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -23,13 +29,20 @@ import org.bukkit.entity.MushroomCow;
 import org.bukkit.entity.Parrot;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Cat;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -40,6 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -47,6 +61,9 @@ import java.util.logging.Logger;
 
 public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     public final static Logger logger = Logger.getLogger("Minecraft");
+    private final NamespacedKey NAME_KEY = new NamespacedKey(this, "head_name");
+    private final NamespacedKey LORE_KEY = new NamespacedKey(this, "head_lore");
+    private final PersistentDataType<String,String[]> LORE_PDT = new JsonDataType<>(String[].class);
     private static Field fieldProfileItem;
     HeadHunterConfig headHunterConfig;
     YamlConfiguration chanceConfig;
@@ -94,6 +111,57 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             }
             logKillOrDrop(entity.getKiller(), name.replace(".", "_"), kcConfig());
         }
+    }
+    @EventHandler
+    public void onBlockPlaceEvent(BlockPlaceEvent event) {
+        ItemStack headItem = event.getItemInHand();
+        ItemMeta meta = headItem.getItemMeta();
+        if (headItem.getType() != Material.PLAYER_HEAD || meta == null) {
+            return;
+        }
+        String name = meta.getDisplayName();
+        List<String> lore = meta.getLore();
+        Block block = event.getBlockPlaced();
+        BlockStateSnapshotResult blockStateSnapshotResult = PaperLib.getBlockState(block, true);
+        TileState skullState = (TileState) blockStateSnapshotResult.getState();
+        PersistentDataContainer skullPDC = skullState.getPersistentDataContainer();
+        skullPDC.set(NAME_KEY, PersistentDataType.STRING, name);
+        if (lore != null) {
+            skullPDC.set(LORE_KEY, LORE_PDT, lore.toArray(new String[0]));
+        }
+        if (blockStateSnapshotResult.isSnapshot()) {
+            skullState.update();
+        }
+    }
+
+    @EventHandler
+    public void onBlockDropItemEvent(BlockDropItemEvent event) {
+        BlockState blockState = event.getBlockState();
+        if (blockState.getType() != Material.PLAYER_HEAD) {
+            return;
+        }
+        TileState skullState = (TileState) blockState;
+        PersistentDataContainer skullPDC = skullState.getPersistentDataContainer();
+        String name = skullPDC.get(NAME_KEY, PersistentDataType.STRING);
+        String[] lore = skullPDC.get(LORE_KEY, LORE_PDT);
+        if (name == null) {
+            return;
+        }
+        for (Item item: event.getItems()) {
+            ItemStack itemstack = item.getItemStack();
+            if (itemstack.getType() == Material.PLAYER_HEAD) {
+                ItemMeta meta = itemstack.getItemMeta();
+                if (meta == null) {
+                    continue; // This shouldn't happen
+                }
+                meta.setDisplayName(name);
+                if (lore != null) {
+                    meta.setLore(Arrays.asList(lore));
+                }
+                itemstack.setItemMeta(meta);
+            }
+        }
+
     }
 
     private void registerEvents() {

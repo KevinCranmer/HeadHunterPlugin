@@ -1,0 +1,6 @@
+display_score_in_player_list: true
+looting_enchantment:
+  affects_drop_rate: false
+  # Multiplies the drop rate like so: new_drop_rate = drop_rate * (1 + (looting_level * drop_rate_multiplier))
+  # So if drop_rate_multiplier=0.1 and looting_level=3, then a drop rate of 0.002 becomes 0.002 * (1 + (0.3)) = 0.0026
+  drop_rate_multiplier: 0.05

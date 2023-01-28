@@ -88,10 +88,10 @@ public class CommandManager implements CommandExecutor {
     private void printHeadsMessage(Player p) {
         ConfigurationSection cs = headLogConfig.getConfigurationSection(p.getDisplayName());
         if (cs == null) {
-            getServer().broadcastMessage(String.format("%s%s%s ain't get no head%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, ChatColor.RESET));
+            getServer().broadcastMessage(String.format("%s%s%s has 0/%s heads%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, getValidMobsList().size(), ChatColor.RESET));
             return;
         }
-        getServer().broadcastMessage(String.format("%s%s%s has received the following heads: %s%s%s ", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, ChatColor.AQUA, cs.getKeys(false), ChatColor.RESET));
+        getServer().broadcastMessage(String.format("%s%s%s has received %s/%s heads: %s%s%s ", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, cs.getKeys(false).size(), getValidMobsList().size(), ChatColor.AQUA, cs.getKeys(false), ChatColor.RESET));
     }
 
     /** Get a valid list of mobs based on the chance_config.yml. */

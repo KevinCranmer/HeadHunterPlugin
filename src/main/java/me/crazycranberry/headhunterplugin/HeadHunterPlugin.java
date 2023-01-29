@@ -6,6 +6,7 @@ import me.crazycranberry.headhunterplugin.util.JsonDataType;
 import me.crazycranberry.headhunterplugin.util.MobHeads;
 import me.crazycranberry.headhunterplugin.util.ScoreboardWrapper;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -33,8 +34,10 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -48,15 +51,14 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 public final class HeadHunterPlugin extends JavaPlugin implements Listener {
@@ -137,7 +139,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onBlockDropItemEvent(BlockDropItemEvent event) {
         BlockState blockState = event.getBlockState();
-        if (blockState.getType() != Material.PLAYER_HEAD) {
+        if (blockState.getType() != Material.PLAYER_HEAD && blockState.getType() != Material.PLAYER_WALL_HEAD) {
             return;
         }
         TileState skullState = (TileState) blockState;
@@ -340,8 +342,8 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         setGameProfile(meta, profile);
         List<String> lore = new ArrayList<>();
 
-        lore.add(ChatColor.RESET + "Killed by " + ChatColor.RESET + ChatColor.YELLOW + killer.getName());
-        lore.add(ChatColor.GRAY + "A mod by CrazyCranberry" + ChatColor.RESET);
+        lore.add(ChatColor.LIGHT_PURPLE + "Killed by " + ChatColor.YELLOW + killer.getName());
+        lore.add(ChatColor.GRAY + "A mod by CrazyCranberry");
 
         meta.setLore(lore);
 

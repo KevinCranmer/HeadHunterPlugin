@@ -321,21 +321,9 @@ public enum MobHeads {
             "Witch",	"witch",	"9cc1d9c9-701e-4ecf-9d1b-0822b0a466eb",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTUyMGYxMmM2M2M3OTEyMTg2YzRiZTRlMzBjMzNjNWFjYWVjMGRiMGI2YWJkODM2ZDUxN2Q3NGE2MjI3NWQ0YiJ9fX0="
     ),
-    WITHER_1(
-            "Wither",	"wither.1",	"940486f2-1e1e-4d1f-b77f-1d47a1ba389f",
+    WITHER(
+            "Wither",	"wither",	"940486f2-1e1e-4d1f-b77f-1d47a1ba389f",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWRhMTA4MjhmNjNiN2VjZGVmZDc2N2IzMjQ1ZmJkYWExM2MzZWMwYzZiMTM3NzRmMWVlOGQzMDdjMDM0YzM4MyJ9fX0="
-    ),
-    WITHER_2(
-            "Invulnerable Wither",	"wither.2",	"940486f2-1e1e-4d1f-b77f-1d47a1ba389f",
-            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5NmViOGQ1OTljNGZlZjUzYTk3MTc2YjcyZmY4ZmM0MWUzMmE2NmExNTlmZDQ1MTkwYTBkYTE1NDU4N2UxMiJ9fX0="
-    ),
-    WITHER_3(
-            "Armored Wither",	"wither.3",	"940486f2-1e1e-4d1f-b77f-1d47a1ba389f",
-            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjM3YzU4MTRhOTJmOGVjMGY2YWU5OTMzYWJlOTU0MmUxNjUxOTA3NjhlNzYwNDc4NTQzYWViZWVkNDAyN2MyNyJ9fX0="
-    ),
-    WITHER_4(
-            "Armored Invulnerable Wither",	"wither.4",	"940486f2-1e1e-4d1f-b77f-1d47a1ba389f",
-            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDM2ODJiMDYyMDNiOWRlNGMyODU0MTA3MWEyNmNkYzM0MGRkMjVkNGMzNzJiNzAyM2VjMmY0MTIwMjFkNjJmNyJ9fX0="
     ),
     WITHER_SKELETON(
             "Wither Skeleton",	"wither_skeleton",	"c5b5a5a5-8a1d-4c0b-8e9f-5dd4ac8ab9d6",

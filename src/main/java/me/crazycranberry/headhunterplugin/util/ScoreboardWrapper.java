@@ -64,6 +64,8 @@ public class ScoreboardWrapper {
         ConfigurationSection cs = headLog.getConfigurationSection(player.getDisplayName());
         if (cs != null) {
             objective.getScore(player.getDisplayName()).setScore(cs.getKeys(false).size());
+        } else {
+            objective.getScore(player.getDisplayName()).setScore(0);
         }
     }
 

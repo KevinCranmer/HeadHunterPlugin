@@ -104,7 +104,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             String name = getTrueVictimName(event);
             double roll = Math.random();
             double dropRate = getDropRate(name, entity.getKiller());
-            logger.info(String.format("Rolled %s for a %s drop rate.", roll, dropRate));
+            logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getDisplayName(), name, roll, dropRate));
             if (roll < dropRate) {
                 entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name.replace(".", "_"), entity.getKiller()));
                 getServer().broadcastMessage(String.format("%s%s%s just got a %s%s%s head%s", ChatColor.LIGHT_PURPLE, entity.getKiller().getDisplayName(), ChatColor.GRAY, ChatColor.LIGHT_PURPLE, name.replaceAll("\\.", "_"),  ChatColor.GRAY, ChatColor.RESET));
@@ -273,7 +273,8 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     }
 
     private double getDropRate(String mobName, Player killer) {
-        double dropRate = chanceConfig().getDouble("chance_percent." + mobName.toLowerCase(), defaultChanceConfig().getDouble(mobName));
+        String yamlMobName = "chance_percent." + mobName.toLowerCase();
+        double dropRate = chanceConfig().getDouble(yamlMobName, defaultChanceConfig().getDouble(yamlMobName));
         if (headHunterConfig().looting_matters()) {
             int looting_level = killer.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
             dropRate = dropRate * (1 + (looting_level * headHunterConfig().looting_multiplier()));

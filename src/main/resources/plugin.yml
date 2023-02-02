@@ -19,3 +19,6 @@ commands:
   heads:
     description: List all unique heads you've received.
     usage: "Usage: /heads"
+  togglerolls:
+    description: Toggle whether or not you see the RNG rolls in a whisper.
+    usage: "Usage: /togglerolls"

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getServer;
 
 public class CommandManager implements CommandExecutor {
@@ -23,12 +24,14 @@ public class CommandManager implements CommandExecutor {
     YamlConfiguration chanceConfig;
     YamlConfiguration kcLogConfig;
     YamlConfiguration headLogConfig;
+    YamlConfiguration rollToggleConfig;
 
-    public CommandManager(@NotNull Server server, @NotNull YamlConfiguration chanceConfig, @NotNull YamlConfiguration kcLogConfig, @NotNull YamlConfiguration headLogConfig) {
+    public CommandManager(@NotNull Server server, @NotNull YamlConfiguration chanceConfig, @NotNull YamlConfiguration kcLogConfig, @NotNull YamlConfiguration headLogConfig, @NotNull YamlConfiguration rollToggleConfig) {
         this.server = server;
         this.chanceConfig = chanceConfig;
         this.kcLogConfig = kcLogConfig;
         this.headLogConfig = headLogConfig;
+        this.rollToggleConfig = rollToggleConfig;
     }
 
     @Override
@@ -73,6 +76,14 @@ public class CommandManager implements CommandExecutor {
                 Player p = (Player) sender;
                 printHeadsMessage(p);
             }
+        } else if (command.getName().equalsIgnoreCase("togglerolls")) {
+            if (sender instanceof Player) {
+                String name = ((Player) sender).getDisplayName();
+                if (!rollToggleConfig.contains(name)) {
+                    getLogger().info(String.format("Somehow %s is trying to togglerolls but they don't have a ConfigurationSection for themselves...", name));
+                }
+                rollToggleConfig.set(name, !rollToggleConfig.getBoolean(name));
+            }
         }
         return true;
     }
@@ -88,7 +99,7 @@ public class CommandManager implements CommandExecutor {
     private void printHeadsMessage(Player p) {
         ConfigurationSection cs = headLogConfig.getConfigurationSection(p.getDisplayName());
         if (cs == null) {
-            getServer().broadcastMessage(String.format("%s%s%s has 0/%s heads%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, getValidMobsList().size(), ChatColor.RESET));
+            getServer().broadcastMessage(String.format("%s%s%s ain't get no head%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, ChatColor.RESET));
             return;
         }
         getServer().broadcastMessage(String.format("%s%s%s has received %s/%s heads: %s%s%s ", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, cs.getKeys(false).size(), getValidMobsList().size(), ChatColor.AQUA, cs.getKeys(false), ChatColor.RESET));

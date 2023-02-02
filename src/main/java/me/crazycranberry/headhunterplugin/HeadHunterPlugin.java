@@ -72,6 +72,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     YamlConfiguration defaultChanceConfig;
     YamlConfiguration headLogConfig;
     YamlConfiguration kcLogConfig;
+    YamlConfiguration rollToggleConfig;
     ScoreboardWrapper scoreboardWrapper;
 
     @Override
@@ -87,6 +88,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         try {
             kcConfig().save(getDataFolder() + "" + File.separatorChar + "kc_log.yml");
             hcConfig().save(getDataFolder() + "" + File.separatorChar + "head_log.yml");
+            rollToggleConfig().save(getDataFolder() + "" + File.separatorChar + "head_roll_toggle.yml");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,6 +97,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         displayScoreboard(event);
+        handleHeadRollToggle(event);
     }
 
     @EventHandler
@@ -104,7 +107,11 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             String name = getTrueVictimName(event);
             double roll = Math.random();
             double dropRate = getDropRate(name, entity.getKiller());
-            logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getDisplayName(), name, roll, dropRate));
+            String logString = String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getDisplayName(), name, roll, dropRate);
+            logger.info(logString);
+            if (rollToggleConfig().getBoolean(entity.getKiller().getDisplayName())) {
+                entity.getKiller().sendMessage(logString);
+            }
             if (roll < dropRate) {
                 entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name.replace(".", "_"), entity.getKiller()));
                 getServer().broadcastMessage(String.format("%s%s%s just got a %s%s%s head%s", ChatColor.LIGHT_PURPLE, entity.getKiller().getDisplayName(), ChatColor.GRAY, ChatColor.LIGHT_PURPLE, name.replaceAll("\\.", "_"),  ChatColor.GRAY, ChatColor.RESET));
@@ -114,6 +121,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             logKillOrDrop(entity.getKiller(), name.replace(".", "_"), kcConfig());
         }
     }
+
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
         ItemStack headItem = event.getItemInHand();
@@ -189,12 +197,21 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
     }
 
+    private void handleHeadRollToggle(PlayerJoinEvent event) {
+        String name = event.getPlayer().getDisplayName();
+        if (!rollToggleConfig().contains(name)) {
+            rollToggleConfig().createSection(name);
+            rollToggleConfig().set(name, false);
+        }
+    }
+
     private void registerCommandManager() {
-        CommandManager commandManager = new CommandManager(getServer(), chanceConfig(), kcConfig(), hcConfig());
+        CommandManager commandManager = new CommandManager(getServer(), chanceConfig(), kcConfig(), hcConfig(), rollToggleConfig());
         setCommandManager("kc", commandManager);
         setCommandManager("hc", commandManager);
         setCommandManager("mobs", commandManager);
         setCommandManager("heads", commandManager);
+        setCommandManager("togglerolls", commandManager);
     }
 
     private void setCommandManager(String command, @NotNull CommandManager commandManager) {
@@ -261,6 +278,14 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
         kcLogConfig = loadConfig("kc_log.yml");
         return kcLogConfig;
+    }
+
+    private YamlConfiguration rollToggleConfig() {
+        if (rollToggleConfig != null) {
+            return rollToggleConfig;
+        }
+        rollToggleConfig = loadConfig("head_roll_toggle.yml");
+        return rollToggleConfig;
     }
 
     private HeadHunterConfig headHunterConfig() {

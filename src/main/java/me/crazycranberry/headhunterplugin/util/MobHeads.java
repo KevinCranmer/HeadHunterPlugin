@@ -29,9 +29,25 @@ public enum MobHeads {
             "Armor Stand",	"armor_stand",	"912657c1-58f0-4a6c-b388-9666a0aaa750",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjY0MzZmNTc5MWMwZTY1OTQ3MWE0OWE5MWY4MzZjOWZkMzA5YzI4YjA4MzI2NGJkOTJiYTVlOWJkM2E3NjhiOCJ9fX0="
     ),
-    AXOLOTL(
-            "Axolotl",	"axolotl",	"8eb07ad8-847e-11eb-8dcd-0242ac130003",
-            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGRmM2U5NTUzZTg2YWU4ZjE5MmMyMzBlMjY3Y2Q2NmQyNzU0YWQyNGQ5OTk2MGY3MWFhNWQ0NDI5OGJjNzJmZCJ9fX0="
+    AXOLOTL_LUCY(
+            "Axolotl Lucy",	"axolotl_lucy",	"d8e0e1dc-c9d3-4b93-8eac-28b9ae6c0bdd",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGI5MWIxM2QwYjMzNjA3YTk1ODdlOGJhMTdkODYwMzU2MjVjYjM2MjdjNWRiZWY5Y2YwMGU4YmFlOWYwZjUyYSJ9fX0="
+    ),
+    AXOLOTL_WILD(
+            "Axolotl Wild",	"axolotl_wild",	"b3ddb0c0-fb6f-4671-8704-1e88ef26293f",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTQ2MWM0ZjJjYjFlZGE4ZTE0Y2Q1OWVmYjBiZjg5ZWEyMDc2ZjU0YTA4YjhiNmQwZGIwYmQwNzk3ZDk5YmVlOCJ9fX0="
+    ),
+    AXOLOTL_GOLD(
+            "Axolotl Gold",	"axolotl_gold",	"5cc47961-d9c5-48ae-8178-e599d3e7051f",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2E2NTM0YzMyYWI4NTYwMjg1NTg0NzgxMTVkOTA0ZDUyZjVmMTU0ZDgwZWNiOTAzYjg2NmIxOTA5OWEyNWU0NiJ9fX0="
+    ),
+    AXOLOTL_CYAN(
+            "Axolotl Cyan",	"axolotl_cyan",	"86785280-745f-4dc3-b16e-901e22616d69",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWU4YzcwZTZhNTYxNjFlY2RjNmI3NTY3NDA3MGZiMzA4NzE0YTJiMmI3MGUxZTZkNzZiYzkyMGNlNmNlN2RlNiJ9fX0="
+    ),
+    AXOLOTL_BLUE(
+            "Axolotl Blue",	"axolotl_blue",	"b3e3ab7d-ca8a-45f8-90ec-5acbfb62ee8c",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzAwZTI4Y2Q0ZGRlOWFmN2E5OWFlYjEyYzIzNWZmMWQzYmY2ZDdlOTY2MjYzYmQ5MWE3MTE4YjNkZmVhYmNiNiJ9fX0="
     ),
     BAT(
             "Bat",	"bat",	"19e2f141-789d-4d5e-9cdd-8fbf54af2611",
@@ -44,6 +60,10 @@ public enum MobHeads {
     BLAZE(
             "Blaze",	"blaze",	"ca339549-96da-4f39-8cb8-ebd5c27b83a3",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGVlMjNkYzdhMTBjNmE4N2VmOTM3NDU0YzBlOTRlZDQyYzIzYWE2NDFhOTFlZDg0NzBhMzA0MmQwNWM1MmM1MiJ9fX0="
+    ),
+    CAMEL(
+            "Camel",	"camel",	"f8bb3426-3a81-4127-ac9e-e8119ed82f39",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmE0Yzk1YmZhMGI2MTcyMjI1NTM4OTE0MWI1MDVjZjFhMzhiYWQ5YjBlZjU0M2RlNjE5ZjBjYzkyMjFlZDk3NCJ9fX0="
     ),
     CAVE_SPIDER(
             "Cave Spider",	"cave_spider",	"c1c239ec-22c2-4d2e-ad15-8eb2d2770bcd",
@@ -272,6 +292,10 @@ public enum MobHeads {
     SLIME(
             "Slime",	"slime",	"625a4069-aa5d-4844-bea0-c133d6978373",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzA2NDI0ZWM3YTE5NmIxNWY5YWQ1NzMzYTM2YTZkMWYyZTZhMGQ0MmZmY2UxZTE1MDhmOTBmMzEyYWM0Y2FlZCJ9fX0="
+    ),
+    SNIFFER(
+            "Sniffer",	"sniffer",	"bcd916fa-2c64-4239-8a12-8c61c2882e44",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmU1YTgzNDFjNDc4YTEzNDMwMjk4MWU2YTc3NThlYTRlY2ZkOGQ2MmEwZGY0MDY3ODk3ZTc1NTAyZjliMjVkZSJ9fX0="
     ),
     SNOWMAN(
             "Snowman",	"snowman",	"82a04987-3371-41e2-ac43-91769b4461e7",

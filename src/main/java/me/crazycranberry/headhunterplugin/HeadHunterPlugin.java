@@ -17,6 +17,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Axolotl;
+import org.bukkit.entity.Camel;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Frog;
 import org.bukkit.entity.Sheep;
@@ -301,6 +303,8 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     private String getTrueVictimName(EntityDeathEvent event) {
         String name = event.getEntityType().name().replaceAll(" ", "_");
         switch(name) {
+            case "AXOLOTL":
+                return "AXOLOTL." + ((Axolotl) event.getEntity()).getVariant();
             case "CAT":
                 return "CAT." + ((Cat) event.getEntity()).getCatType();
             case "FOX":

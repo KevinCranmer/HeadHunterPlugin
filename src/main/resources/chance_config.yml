@@ -2,10 +2,16 @@
 # 0.001 = 1/10 of 1 percent, 0.01 = 1 percent, 1.00 = 100 percent
 chance_percent:
   allay: 0.02
-  axolotl: 0.02
+  axolotl:
+    lucy: 0.01
+    wild: 0.01
+    gold: 0.01
+    cyan: 0.01
+    blue: 0.01
   bat: 0.01
   bee: 0.005
   blaze: 0.002
+  camel: 0.0025
   cat:
     all_black: 0.01
     black: 0.01
@@ -122,6 +128,7 @@ chance_percent:
   skeleton: 0.001
   skeleton_horse: 0.25
   slime: 0.002
+  sniffer: 0.02
   snowman: 0.01
   spider: 0.002
   squid: 0.01

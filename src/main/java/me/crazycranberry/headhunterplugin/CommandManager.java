@@ -83,29 +83,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     }
 
     private void printKcMessage(Player p, int kc, String mob) {
-        String kcMessage = headHunterConfig.kill_count_message()
-                .replace("{PLAYER_NAME}", String.format("%s%s%s",  ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY))
-                .replace("{NUMBER}", String.valueOf(kc))
-                .replace("{MOB_NAME}", String.format("%s%s%s",  ChatColor.AQUA, mob, ChatColor.GRAY));
-        getServer().broadcastMessage(ChatColor.GRAY + kcMessage + ChatColor.RESET);
+        getServer().broadcastMessage(headHunterConfig.kill_count_message(p.getDisplayName(), String.valueOf(kc), mob) + ChatColor.RESET);
     }
 
     private void printHcMessage(Player p, int hc, String mob) {
-        String hcMessage = headHunterConfig.head_count_message()
-                .replace("{PLAYER_NAME}", String.format("%s%s%s",  ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY))
-                .replace("{NUMBER}", String.valueOf(hc))
-                .replace("{MOB_NAME}", String.format("%s%s%s",  ChatColor.AQUA, mob, ChatColor.GRAY));
-        getServer().broadcastMessage(ChatColor.GRAY + hcMessage + ChatColor.RESET);
+        getServer().broadcastMessage(headHunterConfig.head_count_message(p.getDisplayName(), String.valueOf(hc), mob) + ChatColor.RESET);
     }
 
     private void printHeadsMessage(Player p) {
         ConfigurationSection cs = headLogConfig.getConfigurationSection(p.getDisplayName());
-        String headsMessage = headHunterConfig.heads_message()
-                .replace("{PLAYER_NAME}", String.format("%s%s%s",  ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY))
-                .replace("{NUMBER}", cs == null ? "0" : String.valueOf(cs.getKeys(false).size()))
-                .replace("{TOTAL}", String.valueOf(getValidMobsList().size()))
-                .replace("{HEAD_LIST}", String.format("%s%s%s",  ChatColor.AQUA, cs == null ? "[]" : cs.getKeys(false).toString(), ChatColor.GRAY));
-        getServer().broadcastMessage(ChatColor.GRAY + headsMessage + ChatColor.RESET);
+        getServer().broadcastMessage(headHunterConfig.heads_message(p.getDisplayName(), cs == null ? "0" : String.valueOf(cs.getKeys(false).size()), String.valueOf(getValidMobsList().size()), cs == null ? "[]" : cs.getKeys(false).toString()) + ChatColor.RESET);
     }
 
     /** Get a valid list of mobs based on the chance_config.yml. */

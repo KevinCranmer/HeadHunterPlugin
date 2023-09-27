@@ -109,10 +109,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getDisplayName(), name, roll, dropRate));
             if (roll < dropRate) {
                 entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name.replace(".", "_"), entity.getKiller()));
-                String headDropMessage = headHunterConfig().head_drop_message()
-                        .replace("{PLAYER_NAME}", String.format("%s%s%s", ChatColor.LIGHT_PURPLE, entity.getKiller().getDisplayName(), ChatColor.GRAY))
-                        .replace("{MOB_NAME}", String.format("%s%s%s", ChatColor.LIGHT_PURPLE, name.replaceAll("\\.", "_"), ChatColor.GRAY));
-                getServer().broadcastMessage(ChatColor.GRAY + headDropMessage + ChatColor.RESET);
+                getServer().broadcastMessage(headHunterConfig().head_drop_message(entity.getKiller().getDisplayName(), name.replaceAll("\\.", "_")) + ChatColor.RESET);
                 logKillOrDrop(entity.getKiller(), name.replace(".", "_"), hcConfig());
                 updateScore(entity.getKiller(), hcConfig());
             }
@@ -350,8 +347,8 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         setGameProfile(meta, profile);
         List<String> lore = new ArrayList<>();
 
-        lore.add(ChatColor.LIGHT_PURPLE + "Killed by " + ChatColor.YELLOW + killer.getName());
-        lore.add(ChatColor.GRAY + "A mod by CrazyCranberry");
+        lore.add(ChatColor.WHITE + headHunterConfig().head_owner_statement(killer.getName()) + ChatColor.RESET);
+        lore.add(ChatColor.WHITE + headHunterConfig().head_secondary_statement() + ChatColor.RESET);
 
         meta.setLore(lore);
 

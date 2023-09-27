@@ -1,14 +1,17 @@
 package me.crazycranberry.headhunterplugin;
 
+import me.crazycranberry.headhunterplugin.util.HeadHunterConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,18 +20,20 @@ import java.util.Set;
 
 import static org.bukkit.Bukkit.getServer;
 
-public class CommandManager implements CommandExecutor {
+public class CommandManager implements CommandExecutor, TabCompleter {
     Server server;
     List<String> validMobs;
     YamlConfiguration chanceConfig;
     YamlConfiguration kcLogConfig;
     YamlConfiguration headLogConfig;
+    HeadHunterConfig headHunterConfig;
 
-    public CommandManager(@NotNull Server server, @NotNull YamlConfiguration chanceConfig, @NotNull YamlConfiguration kcLogConfig, @NotNull YamlConfiguration headLogConfig) {
+    public CommandManager(@NotNull Server server, @NotNull YamlConfiguration chanceConfig, @NotNull YamlConfiguration kcLogConfig, @NotNull YamlConfiguration headLogConfig, @NotNull HeadHunterConfig headHunterConfig) {
         this.server = server;
         this.chanceConfig = chanceConfig;
         this.kcLogConfig = kcLogConfig;
         this.headLogConfig = headLogConfig;
+        this.headHunterConfig = headHunterConfig;
     }
 
     @Override
@@ -37,7 +42,7 @@ public class CommandManager implements CommandExecutor {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
                 if (args.length < 1) {
-                    p.sendMessage("You must provide a mob name (example: FROG_COLD)");
+                    p.sendMessage(headHunterConfig.missing_mob_name_message());
                     return false;
                 }
                 String mob = args[0].toUpperCase();
@@ -51,7 +56,7 @@ public class CommandManager implements CommandExecutor {
                             printHcMessage(p, 0, mob);
                         }
                     } else {
-                        p.sendMessage("That mob does not exist. Try '/mobs' to view a list of all mobs.");
+                        p.sendMessage(headHunterConfig.invalid_mob_name_message());
                     }
                     return true;
                 }
@@ -78,20 +83,29 @@ public class CommandManager implements CommandExecutor {
     }
 
     private void printKcMessage(Player p, int kc, String mob) {
-        getServer().broadcastMessage(String.format("%s%s%s has killed %s %s%s%s's%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, kc, ChatColor.AQUA, mob, ChatColor.GRAY, ChatColor.RESET));
+        String kcMessage = headHunterConfig.kill_count_message()
+                .replace("{PLAYER_NAME}", String.format("%s%s%s",  ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY))
+                .replace("{NUMBER}", String.valueOf(kc))
+                .replace("{MOB_NAME}", String.format("%s%s%s",  ChatColor.AQUA, mob, ChatColor.GRAY));
+        getServer().broadcastMessage(ChatColor.GRAY + kcMessage + ChatColor.RESET);
     }
 
     private void printHcMessage(Player p, int hc, String mob) {
-        getServer().broadcastMessage(String.format("%s%s%s has received %s %s%s%s heads%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, hc, ChatColor.AQUA, mob, ChatColor.GRAY, ChatColor.RESET));
+        String hcMessage = headHunterConfig.head_count_message()
+                .replace("{PLAYER_NAME}", String.format("%s%s%s",  ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY))
+                .replace("{NUMBER}", String.valueOf(hc))
+                .replace("{MOB_NAME}", String.format("%s%s%s",  ChatColor.AQUA, mob, ChatColor.GRAY));
+        getServer().broadcastMessage(ChatColor.GRAY + hcMessage + ChatColor.RESET);
     }
 
     private void printHeadsMessage(Player p) {
         ConfigurationSection cs = headLogConfig.getConfigurationSection(p.getDisplayName());
-        if (cs == null) {
-            getServer().broadcastMessage(String.format("%s%s%s has 0/%s heads%s", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, getValidMobsList().size(), ChatColor.RESET));
-            return;
-        }
-        getServer().broadcastMessage(String.format("%s%s%s has received %s/%s heads: %s%s%s ", ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY, cs.getKeys(false).size(), getValidMobsList().size(), ChatColor.AQUA, cs.getKeys(false), ChatColor.RESET));
+        String headsMessage = headHunterConfig.heads_message()
+                .replace("{PLAYER_NAME}", String.format("%s%s%s",  ChatColor.AQUA, p.getDisplayName(), ChatColor.GRAY))
+                .replace("{NUMBER}", cs == null ? "0" : String.valueOf(cs.getKeys(false).size()))
+                .replace("{TOTAL}", String.valueOf(getValidMobsList().size()))
+                .replace("{HEAD_LIST}", String.format("%s%s%s",  ChatColor.AQUA, cs == null ? "[]" : cs.getKeys(false).toString(), ChatColor.GRAY));
+        getServer().broadcastMessage(ChatColor.GRAY + headsMessage + ChatColor.RESET);
     }
 
     /** Get a valid list of mobs based on the chance_config.yml. */
@@ -122,5 +136,13 @@ public class CommandManager implements CommandExecutor {
         }
         validMobs = l;
         return validMobs;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (sender instanceof Player && (command.getName().equalsIgnoreCase("kc") || command.getName().equalsIgnoreCase("hc")) && args.length == 1) {
+            return getValidMobsList().stream().filter(n -> n.toLowerCase().startsWith(args[0].toLowerCase())).toList();
+        }
+        return null;
     }
 }

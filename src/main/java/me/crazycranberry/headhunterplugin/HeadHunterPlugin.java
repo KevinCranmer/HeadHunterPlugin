@@ -109,7 +109,10 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getDisplayName(), name, roll, dropRate));
             if (roll < dropRate) {
                 entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name.replace(".", "_"), entity.getKiller()));
-                getServer().broadcastMessage(String.format("%s%s%s just got a %s%s%s head%s", ChatColor.LIGHT_PURPLE, entity.getKiller().getDisplayName(), ChatColor.GRAY, ChatColor.LIGHT_PURPLE, name.replaceAll("\\.", "_"),  ChatColor.GRAY, ChatColor.RESET));
+                String headDropMessage = headHunterConfig().head_drop_message()
+                        .replace("{PLAYER_NAME}", String.format("%s%s%s", ChatColor.LIGHT_PURPLE, entity.getKiller().getDisplayName(), ChatColor.GRAY))
+                        .replace("{MOB_NAME}", String.format("%s%s%s", ChatColor.LIGHT_PURPLE, name.replaceAll("\\.", "_"), ChatColor.GRAY));
+                getServer().broadcastMessage(ChatColor.GRAY + headDropMessage + ChatColor.RESET);
                 logKillOrDrop(entity.getKiller(), name.replace(".", "_"), hcConfig());
                 updateScore(entity.getKiller(), hcConfig());
             }
@@ -192,7 +195,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     }
 
     private void registerCommandManager() {
-        CommandManager commandManager = new CommandManager(getServer(), chanceConfig(), kcConfig(), hcConfig());
+        CommandManager commandManager = new CommandManager(getServer(), chanceConfig(), kcConfig(), hcConfig(), headHunterConfig());
         setCommandManager("kc", commandManager);
         setCommandManager("hc", commandManager);
         setCommandManager("mobs", commandManager);

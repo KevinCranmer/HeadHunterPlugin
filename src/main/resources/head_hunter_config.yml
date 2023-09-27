@@ -5,7 +5,7 @@ looting_enchantment:
   # So if drop_rate_multiplier=0.1 and looting_level=3, then a drop rate of 0.002 becomes 0.002 * (1 + (0.3)) = 0.0026
   drop_rate_multiplier: 0.05
 messages:
-  # You may update the messages that get broadcasted to players here. Make sure to include {PLAYER_NAME},
+  # You may update/translate the messages that get broadcasted to players here. Make sure to include {PLAYER_NAME},
   # {MOB_NAME}, or any other variables inside curly braces; otherwise, the default will be used.
   head_drop: "{PLAYER_NAME} just got a {MOB_NAME} head"
   kill_count: "{PLAYER_NAME} has killed {NUMBER} {MOB_NAME}'s"

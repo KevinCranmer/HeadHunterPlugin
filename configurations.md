@@ -22,7 +22,9 @@ These configurations are found in `head_hunter_config.yml`
 with looting III a 30% higher chance of receiving a head (Exact math shown in config file comment).
 - Default: 0.05
 
-
+__messages.*__
+- Customize the messages broadcast from this mod. Good for translating to your native language.
+- See the various messages and their defaults [here](src/main/resources/head_hunter_config.yml).
 
 ----------------------------------------------------------
 Please contact me in [my Discord Server](https://discord.gg/UTjtJPTjGG) if you have any other ideas for configuration options.

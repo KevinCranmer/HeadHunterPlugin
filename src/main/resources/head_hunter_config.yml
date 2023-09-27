@@ -4,3 +4,13 @@ looting_enchantment:
   # Multiplies the drop rate like so: new_drop_rate = drop_rate * (1 + (looting_level * drop_rate_multiplier))
   # So if drop_rate_multiplier=0.1 and looting_level=3, then a drop rate of 0.002 becomes 0.002 * (1 + (0.3)) = 0.0026
   drop_rate_multiplier: 0.05
+messages:
+  # You may update the messages that get broadcasted to players here. Make sure to include {PLAYER_NAME},
+  # {MOB_NAME}, or any other variables inside curly braces; otherwise, the default will be used.
+  head_drop: "{PLAYER_NAME} just got a {MOB_NAME} head"
+  kill_count: "{PLAYER_NAME} has killed {NUMBER} {MOB_NAME}'s"
+  head_count: "{PLAYER_NAME} has received {NUMBER} {MOB_NAME} heads"
+  heads: "{PLAYER_NAME} has received {NUMBER}/{TOTAL} heads: {HEAD_LIST}"
+  command_errors:
+    missing_mob_name: "You must provide a mob name (example: FROG_COLD)"
+    invalid_mob_name: "That mob does not exist. Try '/mobs' to view a list of all mobs."

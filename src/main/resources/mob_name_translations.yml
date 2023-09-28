@@ -1,0 +1,158 @@
+#Note: These are only for messages to the server. The kc_log.yml and kc_log.yml will keep the original english names.
+#Mob names MUST be UNIQUE
+allay: allay
+axolotl:
+  lucy: axolotl_lucy
+  wild: axolotl_wild
+  gold: axolotl_gold
+  cyan: axolotl_cyan
+  blue: axolotl_blue
+bat: bat
+bee: bee
+blaze: blaze
+camel: camel
+cat:
+  all_black: cat_all_black
+  black: cat_black
+  british_shorthair: cat_british_shorthair
+  calico: cat_calico
+  jellie: cat_jellie
+  persian: cat_persian
+  ragdoll: cat_ragdoll
+  red: cat_red
+  siamese: cat_siamese
+  tabby: cat_tabby
+  white: cat_white
+cave_spider: cave_spider
+chicken: chicken
+cod: cod
+cow: cow
+creeper: creeper
+creeper_charged: creeper_charged
+dolphin: dolphin
+donkey: donkey
+drowned: drowned
+elder_guardian: elder_guardian
+ender_dragon: 1.00
+enderman: enderman
+endermite: endermite
+evoker: evoker
+fox:
+  red: fox_red
+  snow: fox_snow
+frog:
+  temperate: frog_temperate
+  cold: frog_cold
+  warm: frog_warm
+ghast: ghast
+giant: giant
+glow_squid: glow_squid
+goat: goat
+guardian: guardian
+hoglin: hoglin
+horse:
+  black: horse_black
+  brown: horse_brown
+  chestnut: horse_chestnut
+  creamy: horse_creamy
+  dark_brown: horse_dark_brown
+  gray: horse_gray
+  white: horse_white
+husk: husk
+illusioner: illusioner
+iron_golem: iron_golem
+llama:
+  brown: llama_brown
+  creamy: llama_creamy
+  gray: llama_gray
+  white: llama_white
+magma_cube: magma_cube
+mule: mule
+mushroom_cow:
+  red: mushroom_cow_red
+  brown: mushroom_cow_brown
+ocelot: ocelot
+panda:
+  aggressive: panda_aggressive
+  brown: panda_brown
+  lazy: panda_lazy
+  normal: panda_normal
+  playful: panda_playful
+  weak: panda_weak
+  worried: panda_worried
+parrot:
+  blue: parrot_blue
+  cyan: parrot_cyan
+  gray: parrot_gray
+  green: parrot_green
+  red: parrot_red
+phantom: phantom
+pig: pig
+piglin: piglin
+piglin_brute: piglin_brute
+pig_zombie: pig_zombie
+pillager: pillager
+polar_bear: polar_bear
+pufferfish: pufferfish
+rabbit:
+  black: sheep_black
+  black_and_white: sheep_black_and_white
+  brown: sheep_brown
+  gold: sheep_gold
+  salt_and_pepper: sheep_salt_and_pepper
+  the_killer_bunny: sheep_the_killer_bunny
+  toast: sheep_toast
+  white: sheep_white
+ravager: ravager
+salmon: salmon
+sheep:
+  black: sheep_black
+  blue: sheep_blue
+  brown: sheep_brown
+  cyan: sheep_cyan
+  gray: sheep_gray
+  green: sheep_green
+  light_blue: sheep_light_blue
+  light_gray: sheep_light_gray
+  lime: sheep_lime
+  magenta: sheep_magenta
+  orange: sheep_orange
+  pink: sheep_pink
+  purple: sheep_purple
+  red: sheep_red
+  white: sheep_white
+  yellow: sheep_yellow
+shulker: shulker
+silverfish: silverfish
+skeleton: skeleton
+skeleton_horse: skeleton_horse
+slime: slime
+sniffer: sniffer
+snowman: snowman
+spider: spider
+squid: squid
+stray: stray
+strider: strider
+tadpole: tadpole
+trader_llama:
+  brown: trader_llama_brown
+  creamy: trader_llama_creamy
+  gray: trader_llama_gray
+  white: trader_llama_white
+tropical_fish: tropical_fish
+turtle: turtle
+vex: vex
+villager: villager
+vindicator: vindicator
+wandering_trader: wandering_trader
+warden: warden
+witch: witch
+wither: wither
+wither_skeleton: wither_skeleton
+wolf: wolf
+zoglin: zoglin
+zombie: zombie
+zombie_horse: zombie_horse
+zombie_pigman: zombie_pigman
+zombified_piglin: zombified_piglin
+zombie_villager: zombie_villager

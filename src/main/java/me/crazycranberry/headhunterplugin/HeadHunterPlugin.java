@@ -64,6 +64,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public final class HeadHunterPlugin extends JavaPlugin implements Listener {
+    private static HeadHunterPlugin plugin;
     public final static Logger logger = Logger.getLogger("Minecraft");
     private final NamespacedKey NAME_KEY = new NamespacedKey(this, "head_name");
     private final NamespacedKey LORE_KEY = new NamespacedKey(this, "head_lore");
@@ -74,11 +75,15 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     YamlConfiguration defaultChanceConfig;
     YamlConfiguration headLogConfig;
     YamlConfiguration kcLogConfig;
+    YamlConfiguration mobNameTranslationConfig;
+    YamlConfiguration defaultMobNameTranslationConfig;
     ScoreboardWrapper scoreboardWrapper;
+    CommandManager commandManager;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
+        plugin = this;
         registerCommandManager();
         registerEvents();
         registerScoreboard();
@@ -106,10 +111,12 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             String name = getTrueVictimName(event);
             double roll = Math.random();
             double dropRate = getDropRate(name, entity.getKiller());
-            logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getDisplayName(), name, roll, dropRate));
+            if (headHunterConfig().log_rolls()) {
+                logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getDisplayName(), translateMob(name), roll, dropRate));
+            }
             if (roll < dropRate) {
-                entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name.replace(".", "_"), entity.getKiller()));
-                getServer().broadcastMessage(headHunterConfig().head_drop_message(entity.getKiller().getDisplayName(), name.replaceAll("\\.", "_")) + ChatColor.RESET);
+                entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name, entity.getKiller()));
+                getServer().broadcastMessage(headHunterConfig().head_drop_message(entity.getKiller().getDisplayName(), translateMob(name) + ChatColor.RESET));
                 logKillOrDrop(entity.getKiller(), name.replace(".", "_"), hcConfig());
                 updateScore(entity.getKiller(), hcConfig());
             }
@@ -192,11 +199,12 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     }
 
     private void registerCommandManager() {
-        CommandManager commandManager = new CommandManager(getServer(), chanceConfig(), kcConfig(), hcConfig(), headHunterConfig());
+        commandManager = new CommandManager(getServer(), chanceConfig(), kcConfig(), hcConfig(), headHunterConfig());
         setCommandManager("kc", commandManager);
         setCommandManager("hc", commandManager);
         setCommandManager("mobs", commandManager);
         setCommandManager("heads", commandManager);
+        setCommandManager("headhunterrefresh", commandManager);
     }
 
     private void setCommandManager(String command, @NotNull CommandManager commandManager) {
@@ -249,6 +257,23 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         return defaultChanceConfig;
     }
 
+    private YamlConfiguration defaultMobNames() {
+        if (defaultMobNameTranslationConfig != null) {
+            return defaultMobNameTranslationConfig;
+        }
+        defaultMobNameTranslationConfig = new YamlConfiguration();
+        try {
+            InputStream defaultChanceConfigStream = getResource("mob_name_translations.yml");
+            assert defaultChanceConfigStream != null;
+            InputStreamReader defaultChanceConfigReader = new InputStreamReader(defaultChanceConfigStream);
+            defaultMobNameTranslationConfig.load(defaultChanceConfigReader);
+        } catch (InvalidConfigurationException | IOException e) {
+            logger.info("[ ERROR ] An error occured while trying to load the (default) mob name file.");
+            e.printStackTrace();
+        }
+        return defaultMobNameTranslationConfig;
+    }
+
     private YamlConfiguration hcConfig() {
         if (headLogConfig != null) {
             return headLogConfig;
@@ -263,6 +288,14 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
         kcLogConfig = loadConfig("kc_log.yml");
         return kcLogConfig;
+    }
+
+    private YamlConfiguration mobNameTranslationConfig() {
+        if (mobNameTranslationConfig != null) {
+            return mobNameTranslationConfig;
+        }
+        mobNameTranslationConfig = loadConfig("mob_name_translations.yml");
+        return mobNameTranslationConfig;
     }
 
     private HeadHunterConfig headHunterConfig() {
@@ -342,7 +375,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
 
         GameProfile profile = new GameProfile(UUID.nameUUIDFromBytes(textureCode.getBytes()), textureCode);
         profile.getProperties().put("textures", new Property("textures",textureCode));
-        profile.getProperties().put("display", new Property("Name", headName + " head"));
+        profile.getProperties().put("display", new Property("Name", translateMob(headName) + " head"));
         assert meta != null;
         setGameProfile(meta, profile);
         List<String> lore = new ArrayList<>();
@@ -352,7 +385,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
 
         meta.setLore(lore);
 
-        meta.setDisplayName(headName);
+        meta.setDisplayName(translateMob(headName));
         item.setItemMeta(meta);
         return item;
     }
@@ -368,5 +401,39 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         catch(NoSuchFieldException | IllegalArgumentException | SecurityException | IllegalAccessException e){
             e.printStackTrace();
         }
+    }
+
+    public void refreshYmlConfigurations() {
+        chanceConfig = loadConfig("chance_config.yml");
+        mobNameTranslationConfig = loadConfig("mob_name_translations.yml");
+        headHunterConfig = new HeadHunterConfig(loadConfig("head_hunter_config.yml"));
+        commandManager.reloadYmlConfigs(chanceConfig(), kcConfig(), hcConfig(), headHunterConfig());
+    }
+
+    public static HeadHunterPlugin getPlugin() {
+        return plugin;
+    }
+
+    public String translateMob(String mobNameEnglish) {
+        String name = mobNameEnglish.toLowerCase();
+        if (!mobNameTranslationConfig().isString(name)) {
+            //maybe it's a mob with a type... Let's try finding it's prefix mob type
+            for (String key : defaultMobNames().getKeys(false)) {
+                if (defaultMobNames().isConfigurationSection(key) && name.startsWith(key)) {
+                    name = name.replace(key + "_", key + ".");
+                }
+            }
+        }
+        return mobNameTranslationConfig().getString(name, defaultMobNames().getString(name)).replaceAll("\\.", "_").toUpperCase();
+    }
+
+    public String translateMobToEnglish(String renamedMob) {
+        String name = renamedMob.toLowerCase();
+        for (String key : mobNameTranslationConfig().getKeys(true)) {
+            if (mobNameTranslationConfig().isString(key) && mobNameTranslationConfig().getString(key).equalsIgnoreCase(name)) {
+                return key.replaceAll("\\.", "_").toUpperCase();
+            }
+        }
+        return renamedMob;
     }
 }

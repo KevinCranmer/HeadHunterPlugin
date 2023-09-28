@@ -1,7 +1,7 @@
 name: HeadHunterPlugin
 version: ${project.version}
 main: me.crazycranberry.headhunterplugin.HeadHunterPlugin
-api-version: 1.19
+api-version: 1.20
 authors: [CrazyCranberry]
 description: Like a Pokemon shiny hunt but mob heads
 commands:
@@ -19,3 +19,6 @@ commands:
   heads:
     description: List all unique heads you've received.
     usage: "Usage: /heads"
+  headhunterrefresh:
+    description: Refresh all yml file configurations.
+    ursage: "Usage: /headhunterrefresh"

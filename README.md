@@ -40,6 +40,9 @@ See available configurations [here](configurations.md).
 ### /mobs
 ![image](images/Mobs.png)
 
+### /headhunterrefresh
+Re-loads `chance_config.yml`, `head_hunter_config.yml`, and `mob_name_translations.yml` files without having to restart the server.
+
 
 ## Contact Me
 Discord: https://discord.gg/UTjtJPTjGG

@@ -87,8 +87,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 printHeadsMessage(p);
             }
         } else if (command.getName().equalsIgnoreCase("headhunterrefresh")) {
-            getPlugin().refreshYmlConfigurations();
+            String refreshResponse = getPlugin().refreshYmlConfigurations();
             validMobs = null;
+            if (sender instanceof Player) {
+                Player p = (Player) sender;
+                p.sendMessage(refreshResponse);
+            }
         }
         return true;
     }

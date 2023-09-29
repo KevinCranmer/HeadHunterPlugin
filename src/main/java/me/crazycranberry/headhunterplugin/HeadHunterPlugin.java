@@ -5,8 +5,8 @@ import me.crazycranberry.headhunterplugin.util.HeadHunterConfig;
 import me.crazycranberry.headhunterplugin.util.JsonDataType;
 import me.crazycranberry.headhunterplugin.util.MobHeads;
 import me.crazycranberry.headhunterplugin.util.ScoreboardWrapper;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -51,6 +51,7 @@ import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -198,6 +199,22 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
     }
 
+    private void displayScoreboardForAll() {
+        registerScoreboard();
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+            p.setScoreboard(scoreboardWrapper.getScoreboard());
+            scoreboardWrapper.updateScore(p, hcConfig());
+        }
+    }
+
+    private void hideScoreboard() {
+        for (String entry : scoreboardWrapper.getScoreboard().getEntries()) {
+            scoreboardWrapper.getScoreboard().resetScores(entry);
+        }
+        scoreboardWrapper.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
+        scoreboardWrapper = null;
+    }
+
     private void registerCommandManager() {
         commandManager = new CommandManager(getServer(), chanceConfig(), kcConfig(), hcConfig(), headHunterConfig());
         setCommandManager("kc", commandManager);
@@ -216,7 +233,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    private YamlConfiguration loadConfig(String configName) {
+    private YamlConfiguration loadConfig(String configName) throws InvalidConfigurationException {
         File configFile = new File(getDataFolder() + "" + File.separatorChar + configName);
         if(!configFile.exists()){
             saveResource(configName, true);
@@ -226,8 +243,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         try {
             config.load(configFile);
         } catch (InvalidConfigurationException | IOException e) {
-            logger.info("[ ERROR ] An error occured while trying to load " + configName);
-            e.printStackTrace();
+            throw new InvalidConfigurationException("[ ERROR ] An error occured while trying to load " + configName);
         }
         return config;
     }
@@ -236,7 +252,11 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (chanceConfig != null) {
             return chanceConfig;
         }
-        chanceConfig = loadConfig("chance_config.yml");
+        try {
+            chanceConfig = loadConfig("chance_config.yml");
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
         return chanceConfig;
     }
 
@@ -278,7 +298,11 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (headLogConfig != null) {
             return headLogConfig;
         }
-        headLogConfig = loadConfig("head_log.yml");
+        try {
+            headLogConfig = loadConfig("head_log.yml");
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
         return headLogConfig;
     }
 
@@ -286,7 +310,11 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (kcLogConfig != null) {
             return kcLogConfig;
         }
-        kcLogConfig = loadConfig("kc_log.yml");
+        try {
+            kcLogConfig = loadConfig("kc_log.yml");
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
         return kcLogConfig;
     }
 
@@ -294,7 +322,11 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (mobNameTranslationConfig != null) {
             return mobNameTranslationConfig;
         }
-        mobNameTranslationConfig = loadConfig("mob_name_translations.yml");
+        try {
+            mobNameTranslationConfig = loadConfig("mob_name_translations.yml");
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
         return mobNameTranslationConfig;
     }
 
@@ -302,7 +334,12 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (headHunterConfig != null) {
             return headHunterConfig;
         }
-        YamlConfiguration headHunterYamlConfig = loadConfig("head_hunter_config.yml");
+        YamlConfiguration headHunterYamlConfig = null;
+        try {
+            headHunterYamlConfig = loadConfig("head_hunter_config.yml");
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
         headHunterConfig = new HeadHunterConfig(headHunterYamlConfig);
         return headHunterConfig;
     }
@@ -403,11 +440,24 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    public void refreshYmlConfigurations() {
-        chanceConfig = loadConfig("chance_config.yml");
-        mobNameTranslationConfig = loadConfig("mob_name_translations.yml");
-        headHunterConfig = new HeadHunterConfig(loadConfig("head_hunter_config.yml"));
-        commandManager.reloadYmlConfigs(chanceConfig(), kcConfig(), hcConfig(), headHunterConfig());
+    public String refreshYmlConfigurations() {
+        boolean wasScoreboardDisplayed = headHunterConfig().display_score();
+        try {
+            chanceConfig = loadConfig("chance_config.yml");
+            mobNameTranslationConfig = loadConfig("mob_name_translations.yml");
+            headHunterConfig = new HeadHunterConfig(loadConfig("head_hunter_config.yml"));
+            commandManager.reloadYmlConfigs(chanceConfig(), kcConfig(), hcConfig(), headHunterConfig());
+            if (wasScoreboardDisplayed && !headHunterConfig().display_score()) {
+                hideScoreboard();
+            }
+            if (!wasScoreboardDisplayed && headHunterConfig().display_score()) {
+                displayScoreboardForAll();
+            }
+            return "Successfully loaded configs.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
     }
 
     public static HeadHunterPlugin getPlugin() {

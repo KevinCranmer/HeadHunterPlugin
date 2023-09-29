@@ -22,3 +22,9 @@ commands:
   headhunterrefresh:
     description: Refresh all yml file configurations.
     ursage: "Usage: /headhunterrefresh"
+    permission: admin
+    permission-message: You do not have permission to refresh.
+permissions:
+  admin:
+    description: Head Hunter Plugin Admin permission
+    default: op

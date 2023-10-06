@@ -417,7 +417,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         setGameProfile(meta, profile);
         List<String> lore = new ArrayList<>();
 
-        lore.add(ChatColor.WHITE + headHunterConfig().head_owner_statement(killer.getName()) + ChatColor.RESET);
+        lore.add(ChatColor.WHITE + headHunterConfig().head_owner_statement(killer.getName(), translateMob(headName)) + ChatColor.RESET);
         lore.add(ChatColor.WHITE + headHunterConfig().head_secondary_statement() + ChatColor.RESET);
 
         meta.setLore(lore);

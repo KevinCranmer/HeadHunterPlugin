@@ -69,25 +69,30 @@ public class HeadHunterConfig {
         String head_drop_maybe = config.getString("messages.head_drop", originalConfig.getString("messages.head_drop"));
         if (head_drop_maybe.contains("{PLAYER_NAME}") && head_drop_maybe.contains("{MOB_NAME}")) {
             head_drop = injectColor(head_drop_maybe);
+        } else {
+            head_drop = injectColor(originalConfig.getString("messages.head_drop"));
         }
         String kill_count_maybe = config.getString("messages.kill_count", originalConfig.getString("messages.kill_count"));
         if (kill_count_maybe.contains("{PLAYER_NAME}") && kill_count_maybe.contains("{NUMBER}") && kill_count_maybe.contains("{MOB_NAME}")) {
             kill_count = injectColor(kill_count_maybe);
+        } else {
+            kill_count = injectColor(originalConfig.getString("messages.kill_count"));
         }
         String head_count_maybe = config.getString("messages.head_count", originalConfig.getString("messages.head_count"));
         if (head_count_maybe.contains("{PLAYER_NAME}") && head_count_maybe.contains("{NUMBER}") && head_count_maybe.contains("{MOB_NAME}")) {
             head_count = injectColor(head_count_maybe);
+        } else {
+            head_count = injectColor(originalConfig.getString("messages.head_count"));
         }
         String heads_maybe = config.getString("messages.heads", originalConfig.getString("messages.heads"));
         if (heads_maybe.contains("{PLAYER_NAME}") && heads_maybe.contains("{NUMBER}") && heads_maybe.contains("{TOTAL}") && heads_maybe.contains("{HEAD_LIST}")) {
             heads = injectColor(heads_maybe);
+        } else {
+            heads = injectColor(originalConfig.getString("messages.heads"));
         }
         missing_mob_name = injectColor(config.getString("messages.command_errors.missing_mob_name", originalConfig.getString("messages.command_errors.missing_mob_name")));
         invalid_mob_name = injectColor(config.getString("messages.command_errors.invalid_mob_name", originalConfig.getString("messages.command_errors.invalid_mob_name")));
-        String head_owner_statement_maybe = config.getString("messages.head_lore.owner_statement", originalConfig.getString("messages.head_lore.owner_statement"));
-        if (head_owner_statement_maybe.contains("{PLAYER_NAME}")) {
-            head_owner_statement = injectColor(head_owner_statement_maybe);
-        }
+        head_owner_statement = injectColor(config.getString("messages.head_lore.owner_statement", originalConfig.getString("messages.head_lore.owner_statement")));
         head_secondary_statement = injectColor(config.getString("messages.head_lore.secondary_statement", originalConfig.getString("messages.head_lore.secondary_statement")));
     }
 
@@ -143,8 +148,10 @@ public class HeadHunterConfig {
         return invalid_mob_name;
     }
 
-    public String head_owner_statement(String ownerName) {
-        return head_owner_statement.replace("{PLAYER_NAME}", ownerName);
+    public String head_owner_statement(String ownerName, String mobName) {
+        return head_owner_statement
+                .replace("{PLAYER_NAME}", ownerName)
+                .replace("{MOB_NAME}", mobName);
     }
 
     public String head_secondary_statement() {

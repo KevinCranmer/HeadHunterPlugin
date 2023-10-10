@@ -481,7 +481,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         String name = renamedMob.toLowerCase();
         for (String key : mobNameTranslationConfig().getKeys(true)) {
             if (mobNameTranslationConfig().isString(key) && mobNameTranslationConfig().getString(key).equalsIgnoreCase(name)) {
-                return key.replaceAll("\\.", "_").toUpperCase();
+                return key.toUpperCase();
             }
         }
         return renamedMob;

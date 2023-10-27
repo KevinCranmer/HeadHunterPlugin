@@ -474,7 +474,11 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
                 }
             }
         }
-        return mobNameTranslationConfig().getString(name, defaultMobNames().getString(name)).replaceAll("\\.", "_").toUpperCase();
+        String translatedName = mobNameTranslationConfig().getString(name, defaultMobNames().getString(name));
+        if (translatedName == null) {
+            return mobNameEnglish;
+        }
+        return translatedName.replaceAll("\\.", "_").toUpperCase();
     }
 
     public String translateMobToEnglish(String renamedMob) {

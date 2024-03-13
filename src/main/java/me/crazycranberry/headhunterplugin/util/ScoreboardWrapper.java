@@ -61,11 +61,11 @@ public class ScoreboardWrapper {
     }
 
     public void updateScore(Player player, YamlConfiguration headLog) {
-        ConfigurationSection cs = headLog.getConfigurationSection(player.getDisplayName());
+        ConfigurationSection cs = headLog.getConfigurationSection(player.getName());
         if (cs != null) {
-            objective.getScore(player.getDisplayName()).setScore(cs.getKeys(false).size());
+            objective.getScore(player.getName()).setScore(cs.getKeys(false).size());
         } else {
-            objective.getScore(player.getDisplayName()).setScore(0);
+            objective.getScore(player.getName()).setScore(0);
         }
     }
 

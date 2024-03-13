@@ -56,7 +56,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 String mob = getPlugin().translateMobToEnglish(String.join(" ", args).toUpperCase());
                 boolean isKcCommand = command.getName().equalsIgnoreCase("kc");
                 YamlConfiguration config = isKcCommand ? kcLogConfig : headLogConfig;
-                if (!config.contains(p.getDisplayName()) || !Objects.requireNonNull(config.getConfigurationSection(p.getDisplayName())).contains(mob)) {
+                if (!config.contains(p.getName()) || !Objects.requireNonNull(config.getConfigurationSection(p.getDisplayName())).contains(mob)) {
                     if (getValidMobsList().contains(mob)) {
                         if (isKcCommand) {
                             printKcMessage(p, 0, mob);
@@ -68,7 +68,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     }
                     return true;
                 }
-                int count = Objects.requireNonNull(config.getConfigurationSection(p.getDisplayName())).getInt(mob);
+                int count = Objects.requireNonNull(config.getConfigurationSection(p.getName())).getInt(mob);
                 if (isKcCommand) {
                     printKcMessage(p, count, mob);
                 } else {
@@ -98,16 +98,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     }
 
     private void printKcMessage(Player p, int kc, String mob) {
-        getServer().broadcastMessage(headHunterConfig.kill_count_message(p.getDisplayName(), String.valueOf(kc), getPlugin().translateMob(mob)) + ChatColor.RESET);
+        getServer().broadcastMessage(headHunterConfig.kill_count_message(p.getName(), String.valueOf(kc), getPlugin().translateMob(mob)) + ChatColor.RESET);
     }
 
     private void printHcMessage(Player p, int hc, String mob) {
-        getServer().broadcastMessage(headHunterConfig.head_count_message(p.getDisplayName(), String.valueOf(hc), getPlugin().translateMob(mob)) + ChatColor.RESET);
+        getServer().broadcastMessage(headHunterConfig.head_count_message(p.getName(), String.valueOf(hc), getPlugin().translateMob(mob)) + ChatColor.RESET);
     }
 
     private void printHeadsMessage(Player p) {
-        ConfigurationSection cs = headLogConfig.getConfigurationSection(p.getDisplayName());
-        getServer().broadcastMessage(headHunterConfig.heads_message(p.getDisplayName(), cs == null ? "0" : String.valueOf(cs.getKeys(false).size()), String.valueOf(getValidMobsList().size()), cs == null ? "[]" : cs.getKeys(false).stream().map(n -> getPlugin().translateMob(n)).toList().toString()) + ChatColor.RESET);
+        ConfigurationSection cs = headLogConfig.getConfigurationSection(p.getName());
+        getServer().broadcastMessage(headHunterConfig.heads_message(p.getName(), cs == null ? "0" : String.valueOf(cs.getKeys(false).size()), String.valueOf(getValidMobsList().size()), cs == null ? "[]" : cs.getKeys(false).stream().map(n -> getPlugin().translateMob(n)).toList().toString()) + ChatColor.RESET);
     }
 
     /** Get a valid list of mobs based on the chance_config.yml. */

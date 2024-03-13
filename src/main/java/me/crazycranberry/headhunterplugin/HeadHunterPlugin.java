@@ -113,11 +113,11 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             double roll = Math.random();
             double dropRate = getDropRate(name, entity.getKiller());
             if (headHunterConfig().log_rolls()) {
-                logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getDisplayName(), translateMob(name), roll, dropRate));
+                logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getName(), translateMob(name), roll, dropRate));
             }
             if (roll < dropRate) {
                 entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name, entity.getKiller()));
-                getServer().broadcastMessage(headHunterConfig().head_drop_message(entity.getKiller().getDisplayName(), translateMob(name) + ChatColor.RESET));
+                getServer().broadcastMessage(headHunterConfig().head_drop_message(entity.getKiller().getName(), translateMob(name) + ChatColor.RESET));
                 logKillOrDrop(entity.getKiller(), name.replace(".", "_"), hcConfig());
                 updateScore(entity.getKiller(), hcConfig());
             }
@@ -355,17 +355,17 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     }
 
     private void logKillOrDrop(Player killer, String victim, YamlConfiguration config) {
-        if (config.contains(String.format("%s.%s", killer.getDisplayName(), victim))) {
-            config.set(String.format("%s.%s", killer.getDisplayName(), victim), config.getInt(String.format("%s.%s", killer.getDisplayName(), victim)) + 1);
-        } else if (config.contains(killer.getDisplayName())) {
-            ConfigurationSection cs = config.getConfigurationSection(killer.getDisplayName());
+        if (config.contains(String.format("%s.%s", killer.getName(), victim))) {
+            config.set(String.format("%s.%s", killer.getName(), victim), config.getInt(String.format("%s.%s", killer.getDisplayName(), victim)) + 1);
+        } else if (config.contains(killer.getName())) {
+            ConfigurationSection cs = config.getConfigurationSection(killer.getName());
             if (cs == null) {
-                logger.info(String.format("For some weird reason, %s has a null ConfigurationSection?", killer.getDisplayName()));
+                logger.info(String.format("For some weird reason, %s has a null ConfigurationSection?", killer.getName()));
                 return;
             }
             cs.set(victim, 1);
         } else {
-            ConfigurationSection cs = config.createSection(killer.getDisplayName());
+            ConfigurationSection cs = config.createSection(killer.getName());
             cs.set(victim, 1);
         }
     }

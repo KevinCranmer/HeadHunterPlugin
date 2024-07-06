@@ -356,7 +356,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
 
     private void logKillOrDrop(Player killer, String victim, YamlConfiguration config) {
         if (config.contains(String.format("%s.%s", killer.getName(), victim))) {
-            config.set(String.format("%s.%s", killer.getName(), victim), config.getInt(String.format("%s.%s", killer.getDisplayName(), victim)) + 1);
+            config.set(String.format("%s.%s", killer.getName(), victim), config.getInt(String.format("%s.%s", killer.getName(), victim)) + 1);
         } else if (config.contains(killer.getName())) {
             ConfigurationSection cs = config.getConfigurationSection(killer.getName());
             if (cs == null) {
@@ -478,7 +478,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (translatedName == null) {
             return mobNameEnglish;
         }
-        return translatedName.replaceAll("\\.", "_").toUpperCase();
+        return translatedName.replaceAll("\\.", " ");
     }
 
     public String translateMobToEnglish(String renamedMob) {

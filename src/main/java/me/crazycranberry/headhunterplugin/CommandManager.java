@@ -56,7 +56,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 String mob = getPlugin().translateMobToEnglish(String.join(" ", args).toUpperCase());
                 boolean isKcCommand = command.getName().equalsIgnoreCase("kc");
                 YamlConfiguration config = isKcCommand ? kcLogConfig : headLogConfig;
-                if (!config.contains(p.getName()) || !Objects.requireNonNull(config.getConfigurationSection(p.getDisplayName())).contains(mob)) {
+                if (!config.contains(p.getName()) || !Objects.requireNonNull(config.getConfigurationSection(p.getName())).contains(mob)) {
                     if (getValidMobsList().contains(mob)) {
                         if (isKcCommand) {
                             printKcMessage(p, 0, mob);

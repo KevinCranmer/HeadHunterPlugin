@@ -2,6 +2,7 @@
 # 0.001 = 1/10 of 1 percent, 0.01 = 1 percent, 1.00 = 100 percent
 chance_percent:
   allay: 0.02
+  armadillo: 0.01
   axolotl:
     lucy: 0.01
     wild: 0.01
@@ -11,6 +12,8 @@ chance_percent:
   bat: 0.01
   bee: 0.005
   blaze: 0.002
+  bogged: 0.002
+  breeze: 0.002
   camel: 0.0025
   cat:
     all_black: 0.01
@@ -151,7 +154,16 @@ chance_percent:
   witch: 0.01
   wither: 0.25
   wither_skeleton: 0.025
-  wolf: 0.01
+  wolf:
+    pale: 0.01
+    spotted: 0.01
+    snowy: 0.01
+    black: 0.01
+    ashen: 0.01
+    rusty: 0.01
+    woods: 0.01
+    chestnut: 0.01
+    striped: 0.01
   zoglin: 0.01
   zombie: 0.001
   zombie_horse: 1.00

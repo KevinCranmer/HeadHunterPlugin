@@ -1,6 +1,7 @@
 #Note: These are only for messages to the server. The kc_log.yml and kc_log.yml will keep the original english names.
 #Mob names MUST be UNIQUE
 allay: allay
+armadillo: armadillo
 axolotl:
   lucy: axolotl_lucy
   wild: axolotl_wild
@@ -10,6 +11,8 @@ axolotl:
 bat: bat
 bee: bee
 blaze: blaze
+bogged: bogged
+breeze: breeze
 camel: camel
 cat:
   all_black: cat_all_black
@@ -33,7 +36,7 @@ dolphin: dolphin
 donkey: donkey
 drowned: drowned
 elder_guardian: elder_guardian
-ender_dragon: 1.00
+ender_dragon: ender_dragon
 enderman: enderman
 endermite: endermite
 evoker: evoker
@@ -149,7 +152,16 @@ warden: warden
 witch: witch
 wither: wither
 wither_skeleton: wither_skeleton
-wolf: wolf
+wolf:
+  pale: wolf_pale
+  spotted: wolf_spotted
+  snowy: wolf_snowy
+  black: wolf_black
+  ashen: wolf_ashen
+  rusty: wolf_rusty
+  woods: wolf_woods
+  chestnut: wolf_chestnut
+  striped: wolf_striped
 zoglin: zoglin
 zombie: zombie
 zombie_horse: zombie_horse

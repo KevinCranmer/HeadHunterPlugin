@@ -1,5 +1,7 @@
 package me.crazycranberry.headhunterplugin;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import io.papermc.lib.PaperLib;
 import me.crazycranberry.headhunterplugin.util.HeadHunterConfig;
 import me.crazycranberry.headhunterplugin.util.JsonDataType;
@@ -33,6 +35,7 @@ import org.bukkit.entity.Parrot;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Cat;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
@@ -51,6 +54,8 @@ import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,15 +66,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Logger;
+
+import static me.crazycranberry.headhunterplugin.util.HeadHunterConfig.updateOutOfDateConfig;
 
 public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     private static HeadHunterPlugin plugin;
     public final static Logger logger = Logger.getLogger("Minecraft");
     private final NamespacedKey NAME_KEY = new NamespacedKey(this, "head_name");
-    private final NamespacedKey LORE_KEY = new NamespacedKey(this, "head_lore");
-    private final PersistentDataType<String,String[]> LORE_PDT = new JsonDataType<>(String[].class);
+    private final NamespacedKey LORE_KEY_1 = new NamespacedKey(this, "head_lore_1");
+    private final NamespacedKey LORE_KEY_2 = new NamespacedKey(this, "head_lore_2");
     private static Field fieldProfileItem;
     HeadHunterConfig headHunterConfig;
     YamlConfiguration chanceConfig;
@@ -116,7 +126,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
                 logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getName(), translateMob(name), roll, dropRate));
             }
             if (roll < dropRate) {
-                entity.getWorld().dropItemNaturally(entity.getLocation(), makeSkull(name, entity.getKiller()));
+                entity.getWorld().dropItem(entity.getLocation(), makeSkull(name, entity.getKiller()));
                 getServer().broadcastMessage(headHunterConfig().head_drop_message(entity.getKiller().getName(), translateMob(name) + ChatColor.RESET));
                 logKillOrDrop(entity.getKiller(), name.replace(".", "_"), hcConfig());
                 updateScore(entity.getKiller(), hcConfig());
@@ -131,19 +141,22 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (headItem.getType() != Material.PLAYER_HEAD || meta == null) {
             return;
         }
-        String name = meta.getDisplayName();
-        List<String> lore = meta.getLore();
+
+        String name = meta.getPersistentDataContainer().get(NAME_KEY, PersistentDataType.STRING);
+        List<String> lore = new ArrayList<>();
+        Optional.ofNullable(meta.getPersistentDataContainer().get(LORE_KEY_1, PersistentDataType.STRING)).ifPresent(lore::add);
+        Optional.ofNullable(meta.getPersistentDataContainer().get(LORE_KEY_2, PersistentDataType.STRING)).ifPresent(lore::add);
         Block block = event.getBlockPlaced();
-        BlockStateSnapshotResult blockStateSnapshotResult = PaperLib.getBlockState(block, true);
-        TileState skullState = (TileState) blockStateSnapshotResult.getState();
+        TileState skullState = (TileState) block.getState();
         PersistentDataContainer skullPDC = skullState.getPersistentDataContainer();
         skullPDC.set(NAME_KEY, PersistentDataType.STRING, name);
-        if (lore != null) {
-            skullPDC.set(LORE_KEY, LORE_PDT, lore.toArray(new String[0]));
+        if (!lore.isEmpty()) {
+            skullPDC.set(LORE_KEY_1, PersistentDataType.STRING, lore.get(0));
+            if (lore.size() > 1) {
+                skullPDC.set(LORE_KEY_2, PersistentDataType.STRING, lore.get(1));
+            }
         }
-        if (blockStateSnapshotResult.isSnapshot()) {
-            skullState.update();
-        }
+        skullState.update();
     }
 
     @EventHandler
@@ -155,7 +168,9 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         TileState skullState = (TileState) blockState;
         PersistentDataContainer skullPDC = skullState.getPersistentDataContainer();
         String name = skullPDC.get(NAME_KEY, PersistentDataType.STRING);
-        String[] lore = skullPDC.get(LORE_KEY, LORE_PDT);
+        List<String> lore = new ArrayList<>();
+        Optional.ofNullable(skullPDC.get(LORE_KEY_1, PersistentDataType.STRING)).ifPresent(lore::add);
+        Optional.ofNullable(skullPDC.get(LORE_KEY_2, PersistentDataType.STRING)).ifPresent(lore::add);
         if (name == null) {
             return;
         }
@@ -167,13 +182,17 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
                     continue; // This shouldn't happen
                 }
                 meta.setDisplayName(name);
-                if (lore != null) {
-                    meta.setLore(Arrays.asList(lore));
+                meta.getPersistentDataContainer().set(NAME_KEY, PersistentDataType.STRING, name);
+                if (!lore.isEmpty()) {
+                    meta.setLore(lore);
+                    meta.getPersistentDataContainer().set(LORE_KEY_1, PersistentDataType.STRING, lore.get(0));
+                    if (lore.size() > 1) {
+                        meta.getPersistentDataContainer().set(LORE_KEY_2, PersistentDataType.STRING, lore.get(1));
+                    }
                 }
                 itemstack.setItemMeta(meta);
             }
         }
-
     }
 
     private void registerEvents() {
@@ -240,12 +259,29 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             logger.info(String.format("%s not found! copied %s to %s", configName, configName, getDataFolder()));
         }
         YamlConfiguration config = new YamlConfiguration();
+        YamlConfiguration originalConfig;
         try {
             config.load(configFile);
+            originalConfig = getOriginalConfig(configName);
+            updateOutOfDateConfig(config, originalConfig, configName);
         } catch (InvalidConfigurationException | IOException e) {
             throw new InvalidConfigurationException("[ ERROR ] An error occured while trying to load " + configName);
         }
         return config;
+    }
+
+    private YamlConfiguration getOriginalConfig(String configName) throws IOException, InvalidConfigurationException {
+        try {
+            YamlConfiguration originalConfig = new YamlConfiguration();
+            InputStream defaultChanceConfigStream = getPlugin().getResource(configName);
+            assert defaultChanceConfigStream != null;
+            InputStreamReader defaultChanceConfigReader = new InputStreamReader(defaultChanceConfigStream);
+            originalConfig.load(defaultChanceConfigReader);
+            return originalConfig;
+        } catch (InvalidConfigurationException | IOException e) {
+            logger.info("[ ERROR ] An error occured while trying to load the (original) " + configName + " file.");
+            throw e;
+        }
     }
 
     private YamlConfiguration chanceConfig() {
@@ -300,6 +336,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
         try {
             headLogConfig = loadConfig("head_log.yml");
+            BackwardsCompatibilityUtils.update(headLogConfig, "head_log.yml");
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
@@ -312,6 +349,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
         try {
             kcLogConfig = loadConfig("kc_log.yml");
+            BackwardsCompatibilityUtils.update(kcLogConfig, "kc_log.yml");
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
@@ -348,7 +386,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         String yamlMobName = "chance_percent." + mobName.toLowerCase();
         double dropRate = chanceConfig().getDouble(yamlMobName, defaultChanceConfig().getDouble(yamlMobName));
         if (headHunterConfig().looting_matters()) {
-            int looting_level = killer.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+            int looting_level = killer.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOTING);
             dropRate = dropRate * (1 + (looting_level * headHunterConfig().looting_multiplier()));
         }
         return dropRate;
@@ -397,6 +435,9 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
                 return "RABBIT." + ((Rabbit) event.getEntity()).getRabbitType();
             case "FROG":
                 return "FROG." + ((Frog) event.getEntity()).getVariant();
+            case "WOLF":
+                // Idk why but just the wolf has a namespace tag when I try to get the variant
+                return "WOLF." + ((Wolf) event.getEntity()).getVariant().toString().replace("minecraft:", "").toUpperCase();
             default:
                 return name;
         }
@@ -405,16 +446,22 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     public ItemStack makeSkull(String headName, Player killer) {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) item.getItemMeta();
-        String textureCode =  MobHeads.valueOf(headName).getTexture();
+        String textureCode =  MobHeads.valueOf(headName.replace(".", "_")).getTexture();
         if (textureCode == null) {
             return item;
         }
-
-        GameProfile profile = new GameProfile(UUID.nameUUIDFromBytes(textureCode.getBytes()), textureCode);
-        profile.getProperties().put("textures", new Property("textures",textureCode));
-        profile.getProperties().put("display", new Property("Name", translateMob(headName) + " head"));
+        PlayerProfile profile = Bukkit.createPlayerProfile("Skull");
+        PlayerTextures textures = profile.getTextures();
+        String jsonTexture = new String(Base64.getDecoder().decode(textureCode), StandardCharsets.UTF_8);
+        String url = JsonParser.parseString(jsonTexture).getAsJsonObject().getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
+        try {
+            textures.setSkin(new URL(url));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        profile.setTextures(textures);
         assert meta != null;
-        setGameProfile(meta, profile);
+        meta.setOwnerProfile(profile);
         List<String> lore = new ArrayList<>();
 
         lore.add(ChatColor.WHITE + headHunterConfig().head_owner_statement(killer.getName(), translateMob(headName)) + ChatColor.RESET);
@@ -422,22 +469,13 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
 
         meta.setLore(lore);
 
-        meta.setDisplayName(translateMob(headName));
+        String translatedName = translateMob(headName);
+        meta.setDisplayName(translatedName);
+        meta.getPersistentDataContainer().set(NAME_KEY, PersistentDataType.STRING, translatedName);
+        meta.getPersistentDataContainer().set(LORE_KEY_1, PersistentDataType.STRING, lore.get(0));
+        meta.getPersistentDataContainer().set(LORE_KEY_2, PersistentDataType.STRING, lore.get(1));
         item.setItemMeta(meta);
         return item;
-    }
-
-    public static void setGameProfile(SkullMeta meta, GameProfile profile){
-        try{
-            if(fieldProfileItem == null) {
-                fieldProfileItem = meta.getClass().getDeclaredField("profile");
-            }
-            fieldProfileItem.setAccessible(true);
-            fieldProfileItem.set(meta, profile);
-        }
-        catch(NoSuchFieldException | IllegalArgumentException | SecurityException | IllegalAccessException e){
-            e.printStackTrace();
-        }
     }
 
     public String refreshYmlConfigurations() {
@@ -485,7 +523,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         String name = renamedMob.toLowerCase();
         for (String key : mobNameTranslationConfig().getKeys(true)) {
             if (mobNameTranslationConfig().isString(key) && mobNameTranslationConfig().getString(key).equalsIgnoreCase(name)) {
-                return key.toUpperCase();
+                return key.toUpperCase().replace(".", "_");
             }
         }
         return renamedMob;

@@ -38,15 +38,14 @@ public class HeadHunterConfig {
             logger.info("[ ERROR ] An error occured while trying to load the (default) head_hunter_config file.");
             e.printStackTrace();
         }
-        updateOutOfDateConfig(config);
         loadConfig(config);
     }
 
-    private void updateOutOfDateConfig(YamlConfiguration config) {
+    public static void updateOutOfDateConfig(YamlConfiguration config, YamlConfiguration originalConfig, String configName) {
         boolean madeAChange = false;
         for (String key : originalConfig.getKeys(true)) {
             if (!config.isString(key) && !config.isConfigurationSection(key) && !config.isBoolean(key) && !config.isDouble(key) && !config.isInt(key)) {
-                logger.info("[HeadHunterPlugin] The " + key + " is missing from head_hunter_config.yml, adding it now.");
+                logger.info("[HeadHunterPlugin] The " + key + " is missing from " + configName + ", adding it now.");
                 config.set(key, originalConfig.get(key));
                 madeAChange = true;
             }
@@ -54,7 +53,7 @@ public class HeadHunterConfig {
 
         if (madeAChange) {
             try {
-                config.save(getPlugin().getDataFolder() + "" + File.separatorChar + "head_hunter_config.yml");
+                config.save(getPlugin().getDataFolder() + "" + File.separatorChar + configName);
             } catch (IOException e) {
                 e.printStackTrace();
             }

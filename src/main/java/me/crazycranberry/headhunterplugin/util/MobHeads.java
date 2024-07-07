@@ -25,6 +25,10 @@ public enum MobHeads {
             "Allay", "allay", "a1ae4481-f3f0-4af9-a83e-75d3a7f87853",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDBlMWM3MDY0YWY3ZGVlNjg2NzdlZmFhOTVmNmU2ZTAxNDMwYjAwNmRkOTE2MzhlYTJhNjE4NDkyNTQ0ODhlYyJ9fX0="
     ),
+    ARMADILLO(
+            "Armadillo",	"armadillo",	"912657c1-58f0-4a6c-b388-9666a0aaa750",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE2NGVkMGUwZWY2OWIwY2U3ODE1ZTQzMDBiNDQxM2E0ODI4ZmNiMDA5MjkxODU0MzU0NWE0MThhNDhlMGMzYyJ9fX0="
+    ),
     ARMOR_STAND(
             "Armor Stand",	"armor_stand",	"912657c1-58f0-4a6c-b388-9666a0aaa750",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjY0MzZmNTc5MWMwZTY1OTQ3MWE0OWE5MWY4MzZjOWZkMzA5YzI4YjA4MzI2NGJkOTJiYTVlOWJkM2E3NjhiOCJ9fX0="
@@ -60,6 +64,14 @@ public enum MobHeads {
     BLAZE(
             "Blaze",	"blaze",	"ca339549-96da-4f39-8cb8-ebd5c27b83a3",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGVlMjNkYzdhMTBjNmE4N2VmOTM3NDU0YzBlOTRlZDQyYzIzYWE2NDFhOTFlZDg0NzBhMzA0MmQwNWM1MmM1MiJ9fX0="
+    ),
+    BOGGED(
+            "Bogged",	"bogged",	"ca339549-96da-4f39-8cb8-ebd5c27b83a3",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNiOTAwM2JhMmQwNTU2MmM3NTExOWI4YTYyMTg1YzY3MTMwZTkyODJmN2FjYmFjNGJjMjgyNGMyMWViOTVkOSJ9fX0="
+    ),
+    BREEZE(
+            "Breeze",	"breeze",	"ca339549-96da-4f39-8cb8-ebd5c27b83a3",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2Q2ZTYwMmY3NmY4MGMwNjU3YjVhZWQ2NGUyNjdlZWVhNzAyYjMxZTZkYWU4NjM0NmM4NTA2ZjI1MzVjZWQwMiJ9fX0="
     ),
     CAMEL(
             "Camel",	"camel",	"f8bb3426-3a81-4127-ac9e-e8119ed82f39",
@@ -356,6 +368,42 @@ public enum MobHeads {
     WOLF(
             "Wolf",	"wolf",	"e6f2820d-03e7-4718-b552-76e1aec11638",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjY0MzlhNDNlNTY4NzAwODgxNWEyZGQxZmY0YTEzNGMxMjIyMWI3ODIzMzY2NzhiOTc5YWQxM2RjZTM5NjY1ZSJ9fX0="
+    ),
+    WOLF_PALE(
+            "Wolf Pale",	"wolf_pale",	"e6f2820d-03e7-4718-b552-76e1aec11638",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjY0MzlhNDNlNTY4NzAwODgxNWEyZGQxZmY0YTEzNGMxMjIyMWI3ODIzMzY2NzhiOTc5YWQxM2RjZTM5NjY1ZSJ9fX0="
+    ),
+    WOLF_SPOTTED(
+            "Wolf Spotted",	"wolf_spotted",	"e6f2820d-03e7-4718-b552-76e1aec11638",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmJkMjNiNGNlYWMxMjU4MTMyYmNiN2JlNjNkZWU3Y2IwY2UyNjlhNDg2NDBlNzJkNGY5YzJkNGFmNzRhZjY3MCJ9fX0="
+    ),
+    WOLF_SNOWY(
+            "Wolf Snowy",	"wolf_snowy",	"e6f2820d-03e7-4718-b552-76e1aec11638",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTBiOGU4YTE1ZGZmMTZiZTQ5NGM2ODdmMTM3OTNlZTM1YWM5OTJhMmNhY2ZmMjVmMzI3YmQyNDA0MTY4NTFmMiJ9fX0="
+    ),
+    WOLF_BLACK(
+            "Wolf Black",	"wolf_black",	"e6f2820d-03e7-4718-b552-76e1aec11638",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjY5NzY1MDMzNDBlYjAzMGFiNzdmMzAwYTJlZmExMmYyMTc5ZGYyY2E5Y2EwZDI5MmQ5ODNjNTBlZDkzMzMwOSJ9fX0="
+    ),
+    WOLF_ASHEN(
+            "Wolf Ashen",	"wolf_ashen",	"e6f2820d-03e7-4718-b552-76e1aec11638",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDcwNjA4ZDQzNmY1YWEyMTMwNDdiNTRhNDQzYTA5MWRkMmQ3MWNiY2Y2ZTczMzM4YjIzNTJjZTExMjUxZGZmMSJ9fX0="
+    ),
+    WOLF_RUSTY(
+            "Wolf Rusty",	"wolf_rusty",	"e6f2820d-03e7-4718-b552-76e1aec11638",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWUwM2M4ZjFkZjk2YTdhMzBlMTE4YzM1ZTlkNzE3NGYxZDlhNjQ5NWQ0ZDg4NjkzYWQwZWVlZTNlNzM0MjNjMCJ9fX0="
+    ),
+    WOLF_WOODS(
+            "Wolf Woods",	"wolf_woods",	"e6f2820d-03e7-4718-b552-76e1aec11638",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmYyOTA4MTU1NzAwZDM3N2E2NzgzNjJlZmJkNjgwMTYwMzE2Y2MyYmMxZmZkMzU4NDljYzlkOTY2MzdhYmI2NSJ9fX0="
+    ),
+    WOLF_CHESTNUT(
+            "Wolf Chestnut",	"wolf_chestnut",	"e6f2820d-03e7-4718-b552-76e1aec11638",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzYyYWQ4YzcwYmFkYjc4NzRhNjM1OTIwYjJmOTM0ZjUxNTFlZmY3NDNiOGU1MWU4YmE3YmFmM2EzZjMxYTI1NiJ9fX0="
+    ),
+    WOLF_STRIPED(
+            "Wolf Striped",	"wolf_striped",	"e6f2820d-03e7-4718-b552-76e1aec11638",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjNmMmRlNTI1MzI4ZTBhNzE2MmI0MGZiYTJhNWJjNmFhNGRlZWJiZGQ2OTk2MTE0NjkxY2UxZDdlZjUzN2NjZiJ9fX0="
     ),
     WOLF_ANGRY(
             "Angry Wolf",	"wolf",	"e6f2820d-03e7-4718-b552-76e1aec11638",

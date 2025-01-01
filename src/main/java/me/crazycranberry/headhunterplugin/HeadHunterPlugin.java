@@ -410,7 +410,6 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
 
     private String getTrueVictimName(EntityDeathEvent event) {
         String name = event.getEntityType().name().replaceAll(" ", "_");
-        System.out.println("THE NAME OF THE MOB: " + name );
         switch(name) {
             case "AXOLOTL":
                 return "AXOLOTL." + ((Axolotl) event.getEntity()).getVariant();

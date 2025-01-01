@@ -6,12 +6,12 @@
 
     <groupId>me.crazycranberry</groupId>
     <artifactId>HeadHunterPlugin</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <packaging>jar</packaging>
 
     <name>HeadHunterPlugin</name>
 
-    <description>Like a RuneScape pet hunt but mob heads</description>
+    <description>Like a Pokemon Shiny Hunt but with Mob Heads</description>
     <properties>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.21-R0.1-SNAPSHOT</version>
+            <version>1.21.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

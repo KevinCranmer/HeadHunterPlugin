@@ -93,6 +93,10 @@ public enum MobHeads {
             "Cow",	"cow",	"1208f5e1-a040-4a4f-8462-372ffb1cd83d",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjNkNjIxMTAwZmVhNTg4MzkyMmU3OGJiNDQ4MDU2NDQ4Yzk4M2UzZjk3ODQxOTQ4YTJkYTc0N2Q2YjA4YjhhYiJ9fX0="
     ),
+    CREAKING(
+            "Creaking",	"creaking",	"c66c91fd-6fb5-414f-b70e-39c19edf3d28",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGNlZWYzMjRjZjllODgyNTAzOTdjMTk3MjE4NDI3OWEzYjYyZmM3ODhhMzk3NzEzOWZmMTEzZTE1ZTAyNjBkIn19fQ=="
+    ),
     CREEPER(
             "Creeper",	"creeper",	"c66c91fd-6fb5-414f-b70e-39c19edf3d28",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVhZjg1MmMyYjczOGU5ODY0OThlZGFlYmZlMGZmZWE5ZTkxM2ZkNGJhZmIyNWJlYmZlZDVhYjNmZGFmYWY3NCJ9fX0="

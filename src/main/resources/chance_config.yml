@@ -31,7 +31,7 @@ chance_percent:
   chicken: 0.00125
   cod: 0.01
   cow: 0.002
-  creaking: 0.01
+  creaking: 0.02
   creeper: 0.004
   creeper_charged: 0.1
   dolphin: 0.025

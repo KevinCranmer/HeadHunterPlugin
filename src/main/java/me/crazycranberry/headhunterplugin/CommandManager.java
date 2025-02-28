@@ -57,7 +57,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 boolean isKcCommand = command.getName().equalsIgnoreCase("kc");
                 YamlConfiguration config = isKcCommand ? kcLogConfig : headLogConfig;
                 if (!config.contains(p.getName()) || !Objects.requireNonNull(config.getConfigurationSection(p.getName())).contains(mob)) {
-                    if (getValidMobsList().contains(mob)) {
+                    if (getValidMobsList().stream().map(n -> n.replace('.', '_')).anyMatch(mob::equals)) {
                         if (isKcCommand) {
                             printKcMessage(p, 0, mob);
                         } else {

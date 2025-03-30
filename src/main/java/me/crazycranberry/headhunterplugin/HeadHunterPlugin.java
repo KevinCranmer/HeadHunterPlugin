@@ -1,10 +1,7 @@
 package me.crazycranberry.headhunterplugin;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonParser;
-import io.papermc.lib.PaperLib;
 import me.crazycranberry.headhunterplugin.util.HeadHunterConfig;
-import me.crazycranberry.headhunterplugin.util.JsonDataType;
 import me.crazycranberry.headhunterplugin.util.MobHeads;
 import me.crazycranberry.headhunterplugin.util.ScoreboardWrapper;
 import org.bukkit.Bukkit;
@@ -20,7 +17,9 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Axolotl;
-import org.bukkit.entity.Camel;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Frog;
 import org.bukkit.entity.Sheep;
@@ -39,10 +38,8 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -50,17 +47,12 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +62,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 import static me.crazycranberry.headhunterplugin.util.HeadHunterConfig.updateOutOfDateConfig;
@@ -252,7 +245,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    private YamlConfiguration loadConfig(String configName) throws InvalidConfigurationException {
+    private YamlConfiguration loadConfig(String configName, BiConsumer<YamlConfiguration, String> backWardsCompatibleUpdateFunction) throws InvalidConfigurationException {
         File configFile = new File(getDataFolder() + "" + File.separatorChar + configName);
         if(!configFile.exists()){
             saveResource(configName, true);
@@ -263,6 +256,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         try {
             config.load(configFile);
             originalConfig = getOriginalConfig(configName);
+            backWardsCompatibleUpdateFunction.accept(config, configName);
             updateOutOfDateConfig(config, originalConfig, configName);
         } catch (InvalidConfigurationException | IOException e) {
             throw new InvalidConfigurationException("[ ERROR ] An error occured while trying to load " + configName);
@@ -270,13 +264,17 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         return config;
     }
 
+    private YamlConfiguration loadConfig(String configName) throws InvalidConfigurationException {
+        return loadConfig(configName, (v1, v2) -> {});
+    }
+
     private YamlConfiguration getOriginalConfig(String configName) throws IOException, InvalidConfigurationException {
         try {
             YamlConfiguration originalConfig = new YamlConfiguration();
-            InputStream defaultChanceConfigStream = getPlugin().getResource(configName);
-            assert defaultChanceConfigStream != null;
-            InputStreamReader defaultChanceConfigReader = new InputStreamReader(defaultChanceConfigStream);
-            originalConfig.load(defaultChanceConfigReader);
+            InputStream originalConfigStream = getPlugin().getResource(configName);
+            assert originalConfigStream != null;
+            InputStreamReader originalConfigReader = new InputStreamReader(originalConfigStream);
+            originalConfig.load(originalConfigReader);
             return originalConfig;
         } catch (InvalidConfigurationException | IOException e) {
             logger.info("[ ERROR ] An error occured while trying to load the (original) " + configName + " file.");
@@ -289,7 +287,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             return chanceConfig;
         }
         try {
-            chanceConfig = loadConfig("chance_config.yml");
+            chanceConfig = loadConfig("chance_config.yml", BackwardsCompatibilityUtils::updateChanceConfig);
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
@@ -335,8 +333,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             return headLogConfig;
         }
         try {
-            headLogConfig = loadConfig("head_log.yml");
-            BackwardsCompatibilityUtils.update(headLogConfig, "head_log.yml");
+            headLogConfig = loadConfig("head_log.yml", BackwardsCompatibilityUtils::updateLogConfig);
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
@@ -348,8 +345,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             return kcLogConfig;
         }
         try {
-            kcLogConfig = loadConfig("kc_log.yml");
-            BackwardsCompatibilityUtils.update(kcLogConfig, "kc_log.yml");
+            kcLogConfig = loadConfig("kc_log.yml", BackwardsCompatibilityUtils::updateLogConfig);
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
@@ -361,7 +357,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             return mobNameTranslationConfig;
         }
         try {
-            mobNameTranslationConfig = loadConfig("mob_name_translations.yml");
+            mobNameTranslationConfig = loadConfig("mob_name_translations.yml", BackwardsCompatibilityUtils::updateMobNameConfig);
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
@@ -409,6 +405,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     }
 
     private String getTrueVictimName(EntityDeathEvent event) {
+        NamespacedKey variant;
         String name = event.getEntityType().name().replaceAll(" ", "_");
         switch(name) {
             case "AXOLOTL":
@@ -436,8 +433,17 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             case "FROG":
                 return "FROG." + ((Frog) event.getEntity()).getVariant();
             case "WOLF":
-                // Idk why but just the wolf has a namespace tag when I try to get the variant
-                return "WOLF." + ((Wolf) event.getEntity()).getVariant().toString().replace("minecraft:", "").toUpperCase();
+                variant = ((Wolf) event.getEntity()).getVariant().getKeyOrThrow();
+                return "WOLF." + variant.getKey().replace("minecraft:", "").toUpperCase();
+            case "COW":
+                variant = ((Cow) event.getEntity()).getVariant().getKeyOrThrow();
+                return "COW." + variant.getKey().replace("minecraft:", "").toUpperCase();
+            case "PIG":
+                variant = ((Pig) event.getEntity()).getVariant().getKeyOrThrow();
+                return "PIG." + variant.getKey().replace("minecraft:", "").toUpperCase();
+            case "CHICKEN":
+                variant = ((Chicken) event.getEntity()).getVariant().getKeyOrThrow();
+                return "CHICKEN." + variant.getKey().replace("minecraft:", "").toUpperCase();
             default:
                 return name;
         }

@@ -81,17 +81,33 @@ public enum MobHeads {
             "Cave Spider",	"cave_spider",	"c1c239ec-22c2-4d2e-ad15-8eb2d2770bcd",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWY4NDNiYjdhOTg0ZTczNGFiNzZhODhjOWExYTBmNWE0MGJmNzk1MjQ4MDlhODUxMWJmMzJkMDU3NTI2ZjdmMyJ9fX0="
     ),
-    CHICKEN(
-            "Chicken",	"chicken",	"fadbdff9-a3e6-471a-8dc3-23e23f9c7acf",
+    CHICKEN_TEMPERATE(
+            "Chicken Temperate",	"chicken_temperate",	"fadbdff9-a3e6-471a-8dc3-23e23f9c7acf",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDJhZjZlNTg0N2VlYTA5OWUxYjBhYjhjMjBhOWU1ZjNjNzE5MDE1OGJkYTU0ZTI4MTMzZDliMjcxZWMwY2I0YiJ9fX0="
+    ),
+    CHICKEN_WARM(
+            "Chicken Warm",	"chicken_warm",	"fadbdff9-a3e6-471a-8dc3-23e23f9c7acf",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzUxYzc0ZjZkMWVkNmJlZmJlNjM3NmNhMzIyYjUzYmI2ZjY4ZTExZDFjZTM5YzZiY2VkZWEyOTgyNTk5MzY5MyJ9fX0="
+    ),
+    CHICKEN_COLD(
+            "Chicken Cold",	"chicken_cold",	"fadbdff9-a3e6-471a-8dc3-23e23f9c7acf",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzE3NTNkY2Y5YWIzNzg3NGM4ZDU3OGUxNTU5YjM4M2NiMWQxZjBiYjNiMjllNmM5NjA1ZjNhODE3YmU4ZmRjNyJ9fX0="
     ),
     COD(
             "Cod",	"cod",	"d8645871-ea91-4742-a0a3-0f86dc49653b",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjI0NmUxOWIzMmNmNzg0NTQ5NDQ3ZTA3Yjk2MDcyZTFmNjU2ZDc4ZTkzY2NjYTU2Mzc0ODVlNjc0OTczNDY1MiJ9fX0="
     ),
-    COW(
-            "Cow",	"cow",	"1208f5e1-a040-4a4f-8462-372ffb1cd83d",
+    COW_TEMPERATE(
+            "Cow Temperate",	"cow_temperate",	"1208f5e1-a040-4a4f-8462-372ffb1cd83d",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjNkNjIxMTAwZmVhNTg4MzkyMmU3OGJiNDQ4MDU2NDQ4Yzk4M2UzZjk3ODQxOTQ4YTJkYTc0N2Q2YjA4YjhhYiJ9fX0="
+    ),
+    COW_WARM(
+            "Cow Warm",	"cow_warm",	"1208f5e1-a040-4a4f-8462-372ffb1cd83d",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjNiMzM3NmZhZjI4MWMxNGJhNDcyZDJlN2Y2YjZkMDE2OWU0YmMyMzc0ODM1YTlmOGQwNzg4ZTA0ZDgxMzQzZCJ9fX0="
+    ),
+    COW_COLD(
+            "Cow Cold",	"cow_cold",	"1208f5e1-a040-4a4f-8462-372ffb1cd83d",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTMzMjIxNDg0ZDM5ZjBkNGVjZGZmYTcyOTU2N2NlNzdmYThjZTA1YjA5MWRiNzZkZDViMDc5YTIwZjdiZjMzOSJ9fX0="
     ),
     CREAKING(
             "Creaking",	"creaking",	"c66c91fd-6fb5-414f-b70e-39c19edf3d28",
@@ -253,9 +269,17 @@ public enum MobHeads {
             "Phantom",	"phantom",	"385f1bf3-12d8-4246-87fc-2622a415a312",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzQ2ODMwZGE1ZjgzYTNhYWVkODM4YTk5MTU2YWQ3ODFhNzg5Y2ZjZjEzZTI1YmVlZjdmNTRhODZlNGZhNCJ9fX0="
     ),
-    PIG(
-            "Pig",	"pig",	"afb61daf-4fda-4ac4-9ddd-b2309377bcda",
+    PIG_TEMPERATE(
+            "Pig Temperate",	"pig_temperate",	"afb61daf-4fda-4ac4-9ddd-b2309377bcda",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDFlZTc2ODFhZGYwMDA2N2YwNGJmNDI2MTFjOTc2NDEwNzVhNDRhZTJiMWMwMzgxZDVhYzZiMzI0NjIxMWJmZSJ9fX0="
+    ),
+    PIG_COLD(
+            "Pig Cold",	"pig_cold",	"afb61daf-4fda-4ac4-9ddd-b2309377bcda",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmExOGQ0MDQzY2Q2YzkwMzg2Njc4ODkxNGZkNTM0MzE1MjgxYWY5ZjI1OWUzNDgzN2UzZTE3NWU1NDVjMmVkZSJ9fX0="
+    ),
+    PIG_WARM(
+            "Pig Warm",	"pig_warm",	"afb61daf-4fda-4ac4-9ddd-b2309377bcda",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2JlYmExYTJkNTZlODRmOGU1MWZlZDY2NTlmMmNiN2MxNGZlZDQzODU5YWY1ODQ3Mzc4OTdiZjcwYzAzOTQ3NSJ9fX0="
     ),
     PIGLIN(
             "Piglin",	"piglin",	"24d853db-b5b6-4b46-8cd7-4210c38d246d",

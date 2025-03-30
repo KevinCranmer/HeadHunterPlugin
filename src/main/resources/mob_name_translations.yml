@@ -27,9 +27,15 @@ cat:
   tabby: cat_tabby
   white: cat_white
 cave_spider: cave_spider
-chicken: chicken
+chicken:
+  temperate: chicken_temperate
+  cold: chicken_cold
+  warm: chicken_warm
 cod: cod
-cow: cow
+cow:
+  temperate: cow_temperate
+  cold: cow_cold
+  warm: cow_warm
 creaking: creaking
 creeper: creeper
 creeper_charged: creeper_charged
@@ -91,7 +97,10 @@ parrot:
   green: parrot_green
   red: parrot_red
 phantom: phantom
-pig: pig
+pig:
+  temperate: pig_temperate
+  warm: pig_warm
+  cold: pig_cold
 piglin: piglin
 piglin_brute: piglin_brute
 pig_zombie: pig_zombie

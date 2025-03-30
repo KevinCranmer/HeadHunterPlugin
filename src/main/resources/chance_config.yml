@@ -28,9 +28,15 @@ chance_percent:
     tabby: 0.01
     white: 0.01
   cave_spider: 0.002
-  chicken: 0.00125
+  chicken:
+    temperate: 0.00125
+    cold: 0.00125
+    warm: 0.00125
   cod: 0.01
-  cow: 0.002
+  cow:
+    temperate: 0.002
+    cold: 0.002
+    warm: 0.002
   creaking: 0.02
   creeper: 0.004
   creeper_charged: 0.1
@@ -92,7 +98,10 @@ chance_percent:
     green: 0.015625
     red: 0.015625
   phantom: 0.01
-  pig: 0.002
+  pig:
+    temperate: 0.002
+    warm: 0.002
+    cold: 0.002
   piglin: 0.002
   piglin_brute: 0.025
   pig_zombie: 0.002

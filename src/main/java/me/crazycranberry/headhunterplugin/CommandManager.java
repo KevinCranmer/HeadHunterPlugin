@@ -142,8 +142,14 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player && (command.getName().equalsIgnoreCase("kc") || command.getName().equalsIgnoreCase("hc")) && args.length == 1) {
-            return getValidMobsList().stream().map(n -> getPlugin().translateMob(n)).filter(n -> n.toLowerCase().startsWith(args[0].toLowerCase())).toList();
+        if (sender instanceof Player && (command.getName().equalsIgnoreCase("kc") || command.getName().equalsIgnoreCase("hc"))) {
+            String typedMobName = String.join(" ", args);
+            return getValidMobsList()
+                .stream()
+                .map(n -> getPlugin().translateMob(n))
+                .filter(n -> n.toLowerCase().startsWith(typedMobName.toLowerCase()))
+                .map(n -> n.substring(Math.max(typedMobName.lastIndexOf(' ') + 1, 0)))
+                .toList();
         }
         return null;
     }

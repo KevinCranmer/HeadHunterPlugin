@@ -181,6 +181,10 @@ public enum MobHeads {
             "Guardian",	"guardian",	"5212ce39-d2a0-48d4-8c3d-b588fb970fcf",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTJiYTM0NDE2NjcwNDU0YjFhMjA0OTZmODBiOTM5ODUyOWY0OTAwM2ZjNjEzZWI5MzAyNDhlYTliNWQxYTM5MSJ9fX0="
     ),
+    HAPPY_GHAST(
+            "Happy Ghast", "happy_ghast", "",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTUxMTEwNjcxYzQ0YjY0NmFjOTc2ZmYyMTRhZjQ4NDk5NGUyMTBmMmNhYzQ4MWZjMTk3YWIwZjAxMWU2MWFhOSJ9fX0="
+    ),
     HOGLIN(
             "Hoglin", "hoglin", "",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE3ZTI4OGUzNTQ0NWI1MjhjNDAxZWJjNzkwZjU1MWY2ZGM3NDkxYzBkZTY2YjYzNjI2YzUxNzU5MWJkNTViNCJ9fX0="

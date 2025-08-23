@@ -60,6 +60,7 @@ chance_percent:
   glow_squid: 0.005
   goat: 0.004
   guardian: 0.015625
+  happy_ghast: 0.025
   hoglin: 0.005
   horse:
     black: 0.01

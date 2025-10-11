@@ -71,11 +71,12 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     private static HeadHunterPlugin plugin;
     public final static Logger logger = Logger.getLogger("Minecraft");
     private final NamespacedKey NAME_KEY = new NamespacedKey(this, "head_name");
-    private final NamespacedKey LORE_KEY_1 = new NamespacedKey(this, "head_lore_1");
-    private final NamespacedKey LORE_KEY_2 = new NamespacedKey(this, "head_lore_2");
+    private final NamespacedKey OWNER_LORE_KEY = new NamespacedKey(this, "head_lore_1");
+    private final NamespacedKey SECONDARY_LORE_KEY = new NamespacedKey(this, "head_lore_2");
     private static Field fieldProfileItem;
     HeadHunterConfig headHunterConfig;
     YamlConfiguration chanceConfig;
+    YamlConfiguration naturalDeathChanceConfig;
     YamlConfiguration defaultChanceConfig;
     YamlConfiguration headLogConfig;
     YamlConfiguration kcLogConfig;
@@ -111,20 +112,21 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onEntityDeathEvent(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.getKiller() != null) {
-            String name = getTrueVictimName(event);
-            System.out.println("Victim name: " + name);
-            double roll = Math.random();
-            double dropRate = getDropRate(name, entity.getKiller());
-            if (headHunterConfig().log_rolls()) {
-                logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", entity.getKiller().getName(), translateMob(name), roll, dropRate));
-            }
-            if (roll < dropRate) {
-                entity.getWorld().dropItem(entity.getLocation(), makeSkull(name, entity.getKiller()));
+        String name = getTrueVictimName(event);
+        double roll = Math.random();
+        double dropRate = getDropRate(name, entity.getKiller());
+        if (headHunterConfig().log_rolls()) {
+            logger.info(String.format("%s killed %s and rolled %s for a %s drop rate.", Optional.ofNullable(entity.getKiller()).map(Player::getName).orElse("Nature"), translateMob(name), roll, dropRate));
+        }
+        if (roll < dropRate) {
+            entity.getWorld().dropItem(entity.getLocation(), makeSkull(name, entity.getKiller()));
+            if (entity.getKiller() != null) {
                 getServer().broadcastMessage(headHunterConfig().head_drop_message(entity.getKiller().getName(), translateMob(name) + ChatColor.RESET));
                 logKillOrDrop(entity.getKiller(), name.replace(".", "_"), hcConfig());
                 updateScore(entity.getKiller(), hcConfig());
             }
+        }
+        if (entity.getKiller() != null) {
             logKillOrDrop(entity.getKiller(), name.replace(".", "_"), kcConfig());
         }
     }
@@ -138,17 +140,17 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
 
         String name = meta.getPersistentDataContainer().get(NAME_KEY, PersistentDataType.STRING);
         List<String> lore = new ArrayList<>();
-        Optional.ofNullable(meta.getPersistentDataContainer().get(LORE_KEY_1, PersistentDataType.STRING)).ifPresent(lore::add);
-        Optional.ofNullable(meta.getPersistentDataContainer().get(LORE_KEY_2, PersistentDataType.STRING)).ifPresent(lore::add);
+        Optional.ofNullable(meta.getPersistentDataContainer().get(OWNER_LORE_KEY, PersistentDataType.STRING)).ifPresent(lore::add);
+        Optional.ofNullable(meta.getPersistentDataContainer().get(SECONDARY_LORE_KEY, PersistentDataType.STRING)).ifPresent(lore::add);
         Block block = event.getBlockPlaced();
         TileState skullState = (TileState) block.getState();
         PersistentDataContainer skullPDC = skullState.getPersistentDataContainer();
         skullPDC.set(NAME_KEY, PersistentDataType.STRING, name);
-        if (!lore.isEmpty()) {
-            skullPDC.set(LORE_KEY_1, PersistentDataType.STRING, lore.get(0));
-            if (lore.size() > 1) {
-                skullPDC.set(LORE_KEY_2, PersistentDataType.STRING, lore.get(1));
-            }
+        if (lore.size() > 1) {
+            skullPDC.set(OWNER_LORE_KEY, PersistentDataType.STRING, lore.get(0));
+            skullPDC.set(SECONDARY_LORE_KEY, PersistentDataType.STRING, lore.get(1));
+        } else if (!lore.isEmpty()) {
+            skullPDC.set(SECONDARY_LORE_KEY, PersistentDataType.STRING, lore.get(0));
         }
         skullState.update();
     }
@@ -163,8 +165,8 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         PersistentDataContainer skullPDC = skullState.getPersistentDataContainer();
         String name = skullPDC.get(NAME_KEY, PersistentDataType.STRING);
         List<String> lore = new ArrayList<>();
-        Optional.ofNullable(skullPDC.get(LORE_KEY_1, PersistentDataType.STRING)).ifPresent(lore::add);
-        Optional.ofNullable(skullPDC.get(LORE_KEY_2, PersistentDataType.STRING)).ifPresent(lore::add);
+        Optional.ofNullable(skullPDC.get(OWNER_LORE_KEY, PersistentDataType.STRING)).ifPresent(lore::add);
+        Optional.ofNullable(skullPDC.get(SECONDARY_LORE_KEY, PersistentDataType.STRING)).ifPresent(lore::add);
         if (name == null) {
             return;
         }
@@ -177,12 +179,12 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
                 }
                 meta.setDisplayName(name);
                 meta.getPersistentDataContainer().set(NAME_KEY, PersistentDataType.STRING, name);
-                if (!lore.isEmpty()) {
-                    meta.setLore(lore);
-                    meta.getPersistentDataContainer().set(LORE_KEY_1, PersistentDataType.STRING, lore.get(0));
-                    if (lore.size() > 1) {
-                        meta.getPersistentDataContainer().set(LORE_KEY_2, PersistentDataType.STRING, lore.get(1));
-                    }
+                meta.setLore(lore);
+                if (lore.size() > 1) {
+                    meta.getPersistentDataContainer().set(OWNER_LORE_KEY, PersistentDataType.STRING, lore.get(0));
+                    meta.getPersistentDataContainer().set(SECONDARY_LORE_KEY, PersistentDataType.STRING, lore.get(1));
+                } else if (!lore.isEmpty()) {
+                    meta.getPersistentDataContainer().set(SECONDARY_LORE_KEY, PersistentDataType.STRING, lore.get(0));
                 }
                 itemstack.setItemMeta(meta);
             }
@@ -382,11 +384,28 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     private double getDropRate(String mobName, Player killer) {
         String yamlMobName = "chance_percent." + mobName.toLowerCase();
         double dropRate = chanceConfig().getDouble(yamlMobName, defaultChanceConfig().getDouble(yamlMobName));
-        if (headHunterConfig().looting_matters()) {
+        if (headHunterConfig().looting_matters() && killer != null) {
             int looting_level = killer.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.LOOTING);
             dropRate = dropRate * (1 + (looting_level * headHunterConfig().looting_multiplier()));
+        } else if (killer == null) {
+            dropRate = naturalDeathChanceConfig().getDouble(yamlMobName, dropRate);
         }
         return dropRate;
+    }
+
+    private YamlConfiguration naturalDeathChanceConfig() {
+        if (naturalDeathChanceConfig == null) {
+            File configFile = new File(getDataFolder() + "" + File.separatorChar + "natural_drop_rate_config.yml");
+            naturalDeathChanceConfig = new YamlConfiguration();
+            if (configFile.exists()) {
+                try {
+                    naturalDeathChanceConfig.load(configFile);
+                } catch (InvalidConfigurationException | IOException e) {
+                    logger.warning("[ WARN ] An error occured while trying to load natural_drop_rate_config.yml. Will use standard drop rates instead.");
+                }
+            }
+        }
+        return naturalDeathChanceConfig;
     }
 
     private void logKillOrDrop(Player killer, String victim, YamlConfiguration config) {
@@ -455,6 +474,8 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         SkullMeta meta = (SkullMeta) item.getItemMeta();
         MobHeads mobHeadInfo = MobHeads.valueOf(headName.replace(".", "_"));
         String textureCode = mobHeadInfo.getTexture();
+        Optional<String> ownerLoreString = Optional.ofNullable(killer).map(k -> String.format("%s%s%s", ChatColor.WHITE, headHunterConfig().head_owner_statement(k.getName(), translateMob(headName)), ChatColor.RESET));
+        String secondaryLoreString = ChatColor.WHITE + headHunterConfig().head_secondary_statement() + ChatColor.RESET;
         if (textureCode == null) {
             return item;
         }
@@ -472,16 +493,16 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         meta.setOwnerProfile(profile);
         List<String> lore = new ArrayList<>();
 
-        lore.add(ChatColor.WHITE + headHunterConfig().head_owner_statement(killer.getName(), translateMob(headName)) + ChatColor.RESET);
-        lore.add(ChatColor.WHITE + headHunterConfig().head_secondary_statement() + ChatColor.RESET);
+        ownerLoreString.ifPresent(lore::add);
+        lore.add(secondaryLoreString);
 
         meta.setLore(lore);
 
         String translatedName = translateMob(headName);
         meta.setDisplayName(translatedName);
         meta.getPersistentDataContainer().set(NAME_KEY, PersistentDataType.STRING, translatedName);
-        meta.getPersistentDataContainer().set(LORE_KEY_1, PersistentDataType.STRING, lore.get(0));
-        meta.getPersistentDataContainer().set(LORE_KEY_2, PersistentDataType.STRING, lore.get(1));
+        ownerLoreString.ifPresent(ols -> meta.getPersistentDataContainer().set(OWNER_LORE_KEY, PersistentDataType.STRING, ols));
+        meta.getPersistentDataContainer().set(SECONDARY_LORE_KEY, PersistentDataType.STRING, secondaryLoreString);
         item.setItemMeta(meta);
         return item;
     }
@@ -490,6 +511,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         boolean wasScoreboardDisplayed = headHunterConfig().display_score();
         try {
             chanceConfig = loadConfig("chance_config.yml");
+            naturalDeathChanceConfig = null; // Force to reload it next time its asked for
             mobNameTranslationConfig = loadConfig("mob_name_translations.yml");
             headHunterConfig = new HeadHunterConfig(loadConfig("head_hunter_config.yml"));
             commandManager.reloadYmlConfigs(chanceConfig(), kcConfig(), hcConfig(), headHunterConfig());

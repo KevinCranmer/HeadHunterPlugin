@@ -32,6 +32,7 @@ chicken:
   cold: chicken_cold
   warm: chicken_warm
 cod: cod
+copper_golem: copper_golem
 cow:
   temperate: cow_temperate
   cold: cow_cold

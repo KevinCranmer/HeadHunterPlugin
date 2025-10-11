@@ -33,6 +33,7 @@ chance_percent:
     cold: 0.00125
     warm: 0.00125
   cod: 0.01
+  copper_golem: 0.025
   cow:
     temperate: 0.002
     cold: 0.002

@@ -113,6 +113,7 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         LivingEntity entity = event.getEntity();
         if (entity.getKiller() != null) {
             String name = getTrueVictimName(event);
+            System.out.println("Victim name: " + name);
             double roll = Math.random();
             double dropRate = getDropRate(name, entity.getKiller());
             if (headHunterConfig().log_rolls()) {
@@ -452,11 +453,12 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
     public ItemStack makeSkull(String headName, Player killer) {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) item.getItemMeta();
-        String textureCode =  MobHeads.valueOf(headName.replace(".", "_")).getTexture();
+        MobHeads mobHeadInfo = MobHeads.valueOf(headName.replace(".", "_"));
+        String textureCode = mobHeadInfo.getTexture();
         if (textureCode == null) {
             return item;
         }
-        PlayerProfile profile = Bukkit.createPlayerProfile("Skull");
+        PlayerProfile profile = Bukkit.getServer().createPlayerProfile(UUID.fromString(mobHeadInfo.getOwner()), "Skull");
         PlayerTextures textures = profile.getTextures();
         String jsonTexture = new String(Base64.getDecoder().decode(textureCode), StandardCharsets.UTF_8);
         String url = JsonParser.parseString(jsonTexture).getAsJsonObject().getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();

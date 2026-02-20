@@ -14,6 +14,7 @@ blaze: blaze
 bogged: bogged
 breeze: breeze
 camel: camel
+camel_husk: camel_husk
 cat:
   all_black: cat_all_black
   black: cat_black
@@ -83,6 +84,7 @@ mule: mule
 mushroom_cow:
   red: mushroom_cow_red
   brown: mushroom_cow_brown
+nautilus: nautilus
 ocelot: ocelot
 panda:
   aggressive: panda_aggressive
@@ -105,7 +107,6 @@ pig:
   cold: pig_cold
 piglin: piglin
 piglin_brute: piglin_brute
-pig_zombie: pig_zombie
 pillager: pillager
 polar_bear: polar_bear
 pufferfish: pufferfish
@@ -177,6 +178,8 @@ wolf:
 zoglin: zoglin
 zombie: zombie
 zombie_horse: zombie_horse
-zombie_pigman: zombie_pigman
+zombie_nautilus:
+  temperate: zombie_nautilus_temperate
+  warm: zombie_nautilus_warm
 zombified_piglin: zombified_piglin
 zombie_villager: zombie_villager

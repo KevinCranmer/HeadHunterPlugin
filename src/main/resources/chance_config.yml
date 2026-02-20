@@ -15,6 +15,7 @@ chance_percent:
   bogged: 0.002
   breeze: 0.002
   camel: 0.0025
+  camel_husk: 0.1
   cat:
     all_black: 0.01
     black: 0.01
@@ -84,6 +85,7 @@ chance_percent:
   mushroom_cow:
     red: 0.01
     brown: 0.01
+  nautilus: 0.004
   ocelot: 0.025
   panda:
     aggressive: 0.01
@@ -106,7 +108,6 @@ chance_percent:
     cold: 0.002
   piglin: 0.002
   piglin_brute: 0.025
-  pig_zombie: 0.002
   pillager: 0.0066667
   polar_bear: 0.01
   pufferfish: 0.01
@@ -178,7 +179,9 @@ chance_percent:
     striped: 0.01
   zoglin: 0.01
   zombie: 0.001
-  zombie_horse: 1.00
-  zombie_pigman: 0.0025
+  zombie_horse: 0.05
+  zombie_nautilus:
+    temperate: 0.025
+    warm: 0.025
   zombified_piglin: 0.0025
   zombie_villager: 0.001

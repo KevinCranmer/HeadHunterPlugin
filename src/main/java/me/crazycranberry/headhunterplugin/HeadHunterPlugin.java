@@ -35,6 +35,7 @@ import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Cat;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Wolf;
+import org.bukkit.entity.ZombieNautilus;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
@@ -464,6 +465,9 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             case "CHICKEN":
                 variant = ((Chicken) event.getEntity()).getVariant().getKeyOrThrow();
                 return "CHICKEN." + variant.getKey().replace("minecraft:", "").toUpperCase();
+            case "ZOMBIE_NAUTILUS":
+                variant = ((ZombieNautilus) event.getEntity()).getVariant().getKeyOrThrow();
+                return "ZOMBIE_NAUTILUS." + variant.getKey().replace("minecraft:", "").toUpperCase();
             default:
                 return name;
         }

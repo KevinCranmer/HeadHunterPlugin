@@ -77,6 +77,10 @@ public enum MobHeads {
             "Camel",	"camel",	"f8bb3426-3a81-4127-ac9e-e8119ed82f39",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmE0Yzk1YmZhMGI2MTcyMjI1NTM4OTE0MWI1MDVjZjFhMzhiYWQ5YjBlZjU0M2RlNjE5ZjBjYzkyMjFlZDk3NCJ9fX0="
     ),
+    CAMEL_HUSK(
+            "Camel Husk",	"camel_husk",	"f8bb3426-3a81-4127-ac9e-e8119ed82f39",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2JkN2E5MmE2ZjY3Yjc1MDBkMTZjNGUxMmYyODA1OGVjMjg1OTMxMTU1NmJhMDNiZTJkMWY1ODExNzBmMmRiNiJ9fX0="
+    ),
     CAVE_SPIDER(
             "Cave Spider",	"cave_spider",	"c1c239ec-22c2-4d2e-ad15-8eb2d2770bcd",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWY4NDNiYjdhOTg0ZTczNGFiNzZhODhjOWExYTBmNWE0MGJmNzk1MjQ4MDlhODUxMWJmMzJkMDU3NTI2ZjdmMyJ9fX0="
@@ -220,6 +224,10 @@ public enum MobHeads {
     MUSHROOM_COW_RED(
             "Red Mushroom",	"mushroom_cow.red",	"b769f2da-e5a8-4882-b15b-d68618904a63",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGE4MDYwNmU4MmM2NDJmMTQxNTg3NzMzZTMxODBhZTU3ZjY0NjQ0MmM5ZmZmZDRlNTk5NzQ1N2UzNDMxMWEyOSJ9fX0="
+    ),
+    NAUTILUS(
+            "Nautilus",	"nautilus",	"b769f2da-e5a8-4882-b15b-d68618904a63",
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjUzZDYzZWIxNzViMDBmYjM1Mjg1ZjQzMzBkMGJlNjhhMDcxM2RiOTRlMDBlNmZkZDg1ODMyZDQxZTNhMDhiIn19fQ=="
     ),
     OCELOT(
             "Ocelot",	"cat.wild_ocelot",	"7f372b3d-c0fb-46df-ae19-4a9ee7584ae5",
@@ -456,6 +464,16 @@ public enum MobHeads {
     ZOMBIE_HORSE(
             "Zombie Horse",	"zombie_horse",	"4bde7ee9-e719-4e2a-9249-26a3b8ac765e",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjYxOGZmYmUxY2ZhMjA1OGZlODBhMDY1ZjcwYzEyOGMyMjVhMWUwYmM5ZGVhZjhiMzhiMDM5NTQ0M2Y0MDkwOSJ9fX0="
+    ),
+    ZOMBIE_NAUTILUS_WARM(
+        "Zombie Nautilus Warm", "zombie_nautilus.warm",
+        "4332ff48-8a0e-4164-ae55-2d16caf68190", // UUID
+        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDUxNmUxOGY0MDBiOGM0ODE5MGIzNDM4YTc1ZmVlZmRhNDUzNjdmMGFlNWQ0ZTQ5NzMyYzQxNzI1MTY1MGVjZiJ9fX0="
+    ),
+    ZOMBIE_NAUTILUS_TEMPERATE(
+        "Zombie Nautilus Temperate", "zombie_nautilus.temperate",
+        "4332ff48-8a0e-4164-ae55-2d16caf68190", // UUID
+        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmQ5YTkzMzM3NmRhNDRjMzM5MTMwN2NiOWY0Y2YwM2YxNmYzYTU0ZjQ5NWZkNWExMWJhZDhhMzczZjlkNTcyMCJ9fX0="
     ),
     ZOMBIFIED_PIGLIN(
             "Zombified Piglin",	"zombified_piglin",	"24d853db-b5b6-4b46-8cd7-4210c38d246d",

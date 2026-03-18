@@ -95,6 +95,7 @@ chance_percent:
     playful: 0.01
     weak: 0.01
     worried: 0.01
+  parched: 0.001
   parrot:
     blue: 0.015625
     cyan: 0.015625

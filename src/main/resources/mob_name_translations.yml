@@ -94,6 +94,7 @@ panda:
   playful: panda_playful
   weak: panda_weak
   worried: panda_worried
+parched: parched
 parrot:
   blue: parrot_blue
   cyan: parrot_cyan

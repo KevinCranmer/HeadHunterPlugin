@@ -454,20 +454,40 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             case "FROG":
                 return "FROG." + ((Frog) event.getEntity()).getVariant();
             case "WOLF":
-                variant = ((Wolf) event.getEntity()).getVariant().getKeyOrThrow();
-                return "WOLF." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                try {
+                    variant = ((Wolf) event.getEntity()).getVariant().getKeyOrThrow();
+                    return "WOLF." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                } catch (Exception ex) {
+                    return "WOLF.PALE";
+                }
             case "COW":
-                variant = ((Cow) event.getEntity()).getVariant().getKeyOrThrow();
-                return "COW." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                try {
+                    variant = ((Cow) event.getEntity()).getVariant().getKeyOrThrow();
+                    return "COW." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                } catch (Exception ex) {
+                    return "COW.TEMPERATE";
+                }
             case "PIG":
-                variant = ((Pig) event.getEntity()).getVariant().getKeyOrThrow();
-                return "PIG." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                try {
+                    variant = ((Pig) event.getEntity()).getVariant().getKeyOrThrow();
+                    return "PIG." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                } catch (Exception ex) {
+                    return "PIG.TEMPERATE";
+                }
             case "CHICKEN":
-                variant = ((Chicken) event.getEntity()).getVariant().getKeyOrThrow();
-                return "CHICKEN." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                try {
+                    variant = ((Chicken) event.getEntity()).getVariant().getKeyOrThrow();
+                    return "CHICKEN." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                } catch (Exception ex) {
+                    return "CHICKEN.TEMPERATE";
+                }
             case "ZOMBIE_NAUTILUS":
-                variant = ((ZombieNautilus) event.getEntity()).getVariant().getKeyOrThrow();
-                return "ZOMBIE_NAUTILUS." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                try {
+                    variant = ((ZombieNautilus) event.getEntity()).getVariant().getKeyOrThrow();
+                    return "ZOMBIE_NAUTILUS." + variant.getKey().replace("minecraft:", "").toUpperCase();
+                } catch (Exception ex) {
+                    return "ZOMBIE_NAUTILUS.TEMPERATE";
+                }
             default:
                 return name;
         }

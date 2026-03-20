@@ -59,12 +59,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static me.crazycranberry.headhunterplugin.util.HeadHunterConfig.updateOutOfDateConfig;
 
@@ -138,8 +140,10 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
         if (headItem.getType() != Material.PLAYER_HEAD || meta == null) {
             return;
         }
-
         String name = meta.getPersistentDataContainer().get(NAME_KEY, PersistentDataType.STRING);
+        if (name == null) {
+            return;
+        }
         List<String> lore = new ArrayList<>();
         Optional.ofNullable(meta.getPersistentDataContainer().get(OWNER_LORE_KEY, PersistentDataType.STRING)).ifPresent(lore::add);
         Optional.ofNullable(meta.getPersistentDataContainer().get(SECONDARY_LORE_KEY, PersistentDataType.STRING)).ifPresent(lore::add);
@@ -454,38 +458,38 @@ public final class HeadHunterPlugin extends JavaPlugin implements Listener {
             case "FROG":
                 return "FROG." + ((Frog) event.getEntity()).getVariant();
             case "WOLF":
-                try {
-                    variant = ((Wolf) event.getEntity()).getVariant().getKeyOrThrow();
-                    return "WOLF." + variant.getKey().replace("minecraft:", "").toUpperCase();
-                } catch (Exception ex) {
+                Wolf.Variant wolfVariant = ((Wolf) event.getEntity()).getVariant();
+                if (Arrays.stream(wolfVariant.getClass().getMethods()).map(Method::getName).anyMatch(m -> m.equals("getKeyOrThrow"))) {
+                    return "WOLF." + wolfVariant.getKeyOrThrow().getKey().replace("minecraft:", "").toUpperCase();
+                } else {
                     return "WOLF.PALE";
                 }
             case "COW":
-                try {
-                    variant = ((Cow) event.getEntity()).getVariant().getKeyOrThrow();
-                    return "COW." + variant.getKey().replace("minecraft:", "").toUpperCase();
-                } catch (Exception ex) {
+                Cow.Variant cowVariant = ((Cow) event.getEntity()).getVariant();
+                if (Arrays.stream(cowVariant.getClass().getMethods()).map(Method::getName).anyMatch(m -> m.equals("getKeyOrThrow"))) {
+                    return "COW." + cowVariant.getKeyOrThrow().getKey().replace("minecraft:", "").toUpperCase();
+                } else {
                     return "COW.TEMPERATE";
                 }
             case "PIG":
-                try {
-                    variant = ((Pig) event.getEntity()).getVariant().getKeyOrThrow();
-                    return "PIG." + variant.getKey().replace("minecraft:", "").toUpperCase();
-                } catch (Exception ex) {
+                Pig.Variant pigVariant = ((Pig) event.getEntity()).getVariant();
+                if (Arrays.stream(pigVariant.getClass().getMethods()).map(Method::getName).anyMatch(m -> m.equals("getKeyOrThrow"))) {
+                    return "PIG." + pigVariant.getKeyOrThrow().getKey().replace("minecraft:", "").toUpperCase();
+                } else {
                     return "PIG.TEMPERATE";
                 }
             case "CHICKEN":
-                try {
-                    variant = ((Chicken) event.getEntity()).getVariant().getKeyOrThrow();
-                    return "CHICKEN." + variant.getKey().replace("minecraft:", "").toUpperCase();
-                } catch (Exception ex) {
+                Chicken.Variant chickenVariant = ((Chicken) event.getEntity()).getVariant();
+                if (Arrays.stream(chickenVariant.getClass().getMethods()).map(Method::getName).anyMatch(m -> m.equals("getKeyOrThrow"))) {
+                    return "CHICKEN." + chickenVariant.getKeyOrThrow().getKey().replace("minecraft:", "").toUpperCase();
+                } else {
                     return "CHICKEN.TEMPERATE";
                 }
             case "ZOMBIE_NAUTILUS":
-                try {
-                    variant = ((ZombieNautilus) event.getEntity()).getVariant().getKeyOrThrow();
-                    return "ZOMBIE_NAUTILUS." + variant.getKey().replace("minecraft:", "").toUpperCase();
-                } catch (Exception ex) {
+                ZombieNautilus.Variant nautilusVariant = ((ZombieNautilus) event.getEntity()).getVariant();
+                if (Arrays.stream(nautilusVariant.getClass().getMethods()).map(Method::getName).anyMatch(m -> m.equals("getKeyOrThrow"))) {
+                    return "ZOMBIE_NAUTILUS." + nautilusVariant.getKeyOrThrow().getKey().replace("minecraft:", "").toUpperCase();
+                } else {
                     return "ZOMBIE_NAUTILUS.TEMPERATE";
                 }
             default:
